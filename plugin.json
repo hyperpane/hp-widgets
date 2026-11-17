@@ -1,0 +1,44 @@
+{
+  "manifest": 1,
+  "id": "widgets",
+  "name": "Widgets",
+  "version": "0.0.1",
+  "publisher": "hyperpane",
+  "description": "Make your own tool panels: lay out buttons, fields, switches and logs on a grid, then give them JavaScript and shell commands that run on the server. Export and import them as .hpw files.",
+  "icon": "icon.svg",
+  "category": "DevOps",
+  "homepage": "https://github.com/hyperpane/hp-widgets",
+  "license": "MIT",
+  "engines": {
+    "hyperpane": ">=0.2.2",
+    "node": ">=22.15.0"
+  },
+  "client": {
+    "main": "main.tsx"
+  },
+  "server": {
+    "runtime": "node",
+    "main": "main.ts"
+  },
+  "contributes": {
+    "nodes": [
+      {
+        "kind": "panel",
+        "title": "Widgets",
+        "icon": "icon.svg",
+        "size": [
+          900,
+          600
+        ],
+        "ports": [
+          { "id": "values", "label": "Values", "direction": "out", "type": "json" }
+        ]
+      }
+    ]
+  },
+  "signature": {
+    "key": "ed25519:5LgmP9NjLnpvz48igrFekSqi+4k6gzaO8sNwlsgNKFc=",
+    "sig": "as/GNT3vk340M+K6pSqRvxgf49LQGGKoZgx15mkuxTz+TxZe7kbdDbssF7jmVzegYIEZgRwBI6FP0jB7xv3/CQ==",
+    "server": "rVERjlUx0fSimZBLJ+pL3ATqPRwi+YmiqJpiDKE7BvFLnkAhoFllH8+O75oURb/IC2wSbD187sYIMNfnHYx9Dw=="
+  }
+}

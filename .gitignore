@@ -1,0 +1,5 @@
+# The author's tools. src/*/node_modules is part of the package: it's what
+# runs, and what the signature covers.
+/node_modules/
+node_modules/.bin/
+.DS_Store

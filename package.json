@@ -1,0 +1,21 @@
+{
+  "name": "hyperpane-plugin-widgets",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "The Widgets plugin's dev tools: the type checker and the types it checks against (the SDK's, React's, CodeMirror's, and the UI kit's variants). Never served or uploaded; build.sh installs them, with the SDK.",
+  "scripts": {
+    "dev": "hyperpane plugin dev ."
+  },
+  "devDependencies": {
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.15",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "class-variance-authority": "0.7.1",
+    "lucide-react": "1.66.0",
+    "typescript": "7.0.2"
+  }
+}
