@@ -14,12 +14,14 @@ export function CodeField({
   onChange,
   placeholder,
   label,
+  fontSize = 12,
   className,
 }: {
   value: string;
   onChange(v: string): void;
   placeholder?: string;
   label: string;
+  fontSize?: number;
   className?: string;
 }) {
   const box = useRef<HTMLDivElement>(null);
@@ -37,7 +39,7 @@ export function CodeField({
         },
         toggleWrap: () => {},
       },
-      { indent: { unit: '  ', tabSize: 2 }, wrap: true, looks: { fontSize: 12, lineNumbers: true, activeLine: true } },
+      { indent: { unit: '  ', tabSize: 2 }, wrap: true, looks: { fontSize, lineNumbers: true, activeLine: true } },
     );
     const v = new EditorView({
       parent: box.current,
@@ -74,7 +76,7 @@ export function CodeField({
     <div
       ref={box}
       className={cn(
-        'rounded-control min-h-0 overflow-hidden border border-[var(--node-border)] text-[12px] focus-within:border-[var(--node-accent)] [&_.cm-editor]:h-full [&_.cm-editor]:outline-none',
+        'rounded-control min-h-0 overflow-hidden border border-[var(--node-border)] focus-within:border-[var(--node-accent)] [&_.cm-editor]:h-full [&_.cm-editor]:outline-none',
         className,
       )}
     />

@@ -11,6 +11,10 @@ const panel: Panel = {
   width: 720,
   height: 400,
   widgets: [newWidget('group', 'box', { x: 8, y: 8 }), newWidget('button', 'ship', { x: 24, y: 40 }), newWidget('log', 'out', { x: 24, y: 88 })],
+  inputs: ['file'],
+  outputs: ['answer'],
+  onRun: "output('answer', inputs.file);",
+  runOnInput: true,
 };
 panel.widgets[1].script = "await run('npm publish', { log: 'out' });";
 panel.widgets[1].enabledWhen = 'out.length == 0';

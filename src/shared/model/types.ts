@@ -82,6 +82,18 @@ export interface Panel {
   height: number;
   /** In drawing order: later ones are on top (groups are drawn first). */
   widgets: Widget[];
+  /** Its window's in-ports, by name: what's linked to one is `inputs.<name>`
+   * in every script. */
+  inputs: string[];
+  /** Its window's out-ports, beside `values`: `output(name, value)` sends
+   * along their links. */
+  outputs: string[];
+  /** JavaScript run on the server when the panel is run (its Run button,
+   * from Workflows, or a value coming in); empty: it isn't a step. */
+  onRun: string;
+  /** Run whenever a value comes in at an in-port (the next step of a
+   * workflow runs as the one before it hands it its value). */
+  runOnInput: boolean;
 }
 
 /** A panel in the chooser's list. */

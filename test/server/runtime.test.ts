@@ -82,6 +82,25 @@ test('ui: get, set, prop, log, clear, toast, as ops in order', async () => {
   ]);
 });
 
+test('the panel run: its in-ports as inputs, output() from its out-ports', async () => {
+  const panel = await panelWith('');
+  panel.inputs = ['file', 'prompt'];
+  panel.outputs = ['answer'];
+  panel.onRun = `
+    if (event.type !== 'run' || event.widget !== 'run') throw new Error('event');
+    if (inputs.prompt !== null) throw new Error('an in-port with nothing at it is null');
+    output('answer', { upper: String(inputs.file).toUpperCase() });
+    output('nope', 1);
+  `;
+  await invoke(plugin, { op: 'save', project: 'p1', panel });
+  const s = stream<Op>(plugin, { op: 'invoke', project: 'p1', window: 1, panel: panel.id, type: 'run', value: null, values: {}, inputs: { file: 'readme' } });
+  assert.equal(await s.end, null);
+  assert.deepEqual(s.events[0], { type: 'output', port: 'answer', value: { upper: 'README' } });
+  const end = done(s.events);
+  assert.equal(end.ok, false);
+  assert.match(end.error ?? '', /no out-port “nope” \(answer\)/);
+});
+
 test('mistakes are the run’s error, with the line they were on', async () => {
   const thrown = await click(await panelWith("ui.log('a');\n\nthrow new Error('Nope');"));
   assert.deepEqual(done(thrown), { type: 'done', ok: false, error: 'Nope (line 3)' });

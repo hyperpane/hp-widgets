@@ -1,5 +1,6 @@
-// One run of a widget's script: the names it's given (values, event, ui,
-// run, sleep, project, console), what each does to the window, sent as ops
+// One run of a script, a widget's or the panel's own (on run): the names
+// it's given (values, inputs, event, ui, output, run, sleep, project,
+// console), what each does to the window, sent as ops
 // as it happens, and how it ends. A stopped run ends at once: its
 // processes are killed, its timers cleared, and whatever it does after
 // that (it may still be awaiting) throws and reaches no window.
@@ -14,9 +15,13 @@ export interface HandlerRun {
   host: Host;
   project: { id: string; name: string; folder: string };
   panel: Panel;
-  widget: Widget;
-  event: { type: 'click' | 'change'; value: Value };
+  /** Whose script it is: a widget's id, or `run` (the panel's). */
+  name: string;
+  script: string;
+  event: { type: 'click' | 'change' | 'run'; value: Value };
   values: Record<string, Value>;
+  /** The latest value at each of the panel's in-ports. */
+  inputs: Record<string, unknown>;
   emit(op: Op): void;
   signal: AbortSignal;
 }
@@ -32,7 +37,7 @@ class Stopped extends Error {
 
 /** Runs the widget's script; resolves with the `done` op (never rejects). */
 export async function runHandler(r: HandlerRun): Promise<Done> {
-  const filename = `${r.panel.name}/${r.widget.id}.js`;
+  const filename = `${r.panel.name}/${r.name}.js`;
   const widgets = new Map(r.panel.widgets.map((w) => [w.id, w]));
   const firstLog = r.panel.widgets.find((w) => w.type === 'log')?.id ?? null;
   const current: Record<string, Value> = { ...r.values };
@@ -126,6 +131,17 @@ export async function runHandler(r: HandlerRun): Promise<Done> {
     toast: (message: unknown, o?: { error?: boolean }) => emit({ type: 'toast', message: String(message), error: !!o?.error }),
   });
 
+  /** A value out at an out-port, along its links. */
+  const output = (port: unknown, value: unknown) => {
+    if (typeof port !== 'string' || !r.panel.outputs.includes(port))
+      throw new Error(
+        `output: there’s no out-port “${String(port)}” (${r.panel.outputs.length ? r.panel.outputs.join(', ') : 'add one under the panel’s Ports'}).`,
+      );
+    // As the port carries it: JSON (a value made in the script's own realm
+    // is plain data once it's been through it).
+    emit({ type: 'output', port, value: value === undefined ? null : JSON.parse(JSON.stringify(value) ?? 'null') });
+  };
+
   /** console.* goes to the first Log, else to the plugin's log. */
   const write = (...args: unknown[]) => {
     alive();
@@ -187,8 +203,10 @@ export async function runHandler(r: HandlerRun): Promise<Done> {
 
   const globals = {
     values: Object.freeze({ ...r.values }),
-    event: Object.freeze({ widget: r.widget.id, type: r.event.type, value: r.event.value }),
+    inputs: Object.freeze({ ...Object.fromEntries(r.panel.inputs.map((p) => [p, null])), ...r.inputs }),
+    event: Object.freeze({ widget: r.name, type: r.event.type, value: r.event.value }),
     ui,
+    output,
     run,
     sleep,
     project: Object.freeze({ ...r.project }),
@@ -208,7 +226,7 @@ export async function runHandler(r: HandlerRun): Promise<Done> {
     if (r.signal.aborted) resolve({ type: 'done', ok: false, cancelled: true });
     r.signal.addEventListener('abort', () => resolve({ type: 'done', ok: false, cancelled: true }), { once: true });
   });
-  const ran = runScript(r.widget.script, globals, filename).then(
+  const ran = runScript(r.script, globals, filename).then(
     (): Done => ({ type: 'done', ok: true }),
     (e): Done => {
       if (r.signal.aborted || (e instanceof ScriptError && /^Stopped: /.test(e.message))) return { type: 'done', ok: false, cancelled: true };

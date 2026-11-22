@@ -2,13 +2,13 @@
 // conditions use), the props its type takes (the registry says which), its
 // box, when it shows and when it takes input, and its script.
 
-import { Copy, Maximize2, Minimize2, Trash } from 'lucide-react';
+import { Copy, Trash } from 'lucide-react';
 import { ToolButton } from '@hyperpane/ui';
 import { conditionProblem, type Panel, TYPES, type Value, type Widget, type WidgetProps } from '../../shared/index.ts';
 import { renameIn, renameProblem } from '../lib/ids.ts';
 import { placed } from '../lib/layout.ts';
 import { type FieldSpec, REGISTRY } from '../widgets/registry.ts';
-import { CodeField } from './CodeField.tsx';
+import { ScriptField } from './ScriptField.tsx';
 import { CheckedField, ChoiceField, LinesField, NumberField, Row, Section, SwitchField, TextField } from './fields.tsx';
 
 export type Edit = (change: (p: Panel) => Panel, key?: string | null) => void;
@@ -26,8 +26,6 @@ export function WidgetInspector({
   onRenamed,
   onDelete,
   onDuplicate,
-  wide,
-  onWide,
 }: {
   panel: Panel;
   widget: Widget;
@@ -35,8 +33,6 @@ export function WidgetInspector({
   onRenamed(id: string): void;
   onDelete(): void;
   onDuplicate(): void;
-  wide: boolean;
-  onWide(wide: boolean): void;
 }) {
   const entry = REGISTRY[widget.type];
   const spec = TYPES[widget.type];
@@ -113,18 +109,14 @@ export function WidgetInspector({
       </Section>
 
       {spec.event && (
-        <Section
-          title={spec.event === 'click' ? 'On click' : 'On change'}
-          aside={<ToolButton label={wide ? 'Narrower' : 'Wider, for the code'} icon={wide ? Minimize2 : Maximize2} onClick={() => onWide(!wide)} />}
-        >
-          <CodeField
+        <Section title={spec.event === 'click' ? 'On click' : 'On change'}>
+          <ScriptField
+            title={`${id} · ${spec.event === 'click' ? 'On click' : 'On change'}`}
             label={`${id}’s script`}
-            className="h-64"
             value={widget.script}
             placeholder={PLACEHOLDER[spec.event]}
             onChange={(v) => change((w) => ({ ...w, script: v }), `${id}.script`)}
           />
-          <ScriptHelp />
         </Section>
       )}
     </>
@@ -204,7 +196,7 @@ function ConditionField({ label, value, ids, onChange }: { label: string; value:
           spellCheck={false}
           placeholder="always"
           onChange={(e) => onChange(e.target.value)}
-          className={`rounded-control h-6 w-full border bg-transparent px-2 font-mono text-xs text-[var(--node-fg)] outline-none placeholder:text-[var(--node-muted)] focus:border-[var(--node-accent)] ${problem ? 'border-[var(--ansi-1)]' : 'border-[var(--node-border)]'}`}
+          className={`rounded-control h-6 w-full border touch:h-9 bg-transparent px-2 font-mono text-xs text-[var(--node-fg)] outline-none placeholder:text-[var(--node-muted)] focus:border-[var(--node-accent)] ${problem ? 'border-[var(--ansi-1)]' : 'border-[var(--node-border)]'}`}
         />
       )}
     </Row>
@@ -212,34 +204,3 @@ function ConditionField({ label, value, ids, onChange }: { label: string; value:
 }
 
 /** What a script has, in a line each, under a fold. */
-function ScriptHelp() {
-  const items: [string, string][] = [
-    ['values', 'every widget’s value as it happened: values.branch'],
-    ['event', '{ widget, type, value }: what happened'],
-    ['ui.get(id) / ui.set(id, value)', 'a value now; a field’s, a Text’s or Badge’s text, a bar’s progress'],
-    ['ui.prop(id, name, value)', 'label, text, options, variant, placeholder, min, max, step, disabled, hidden'],
-    ['ui.log([id,] text) / ui.clear([id])', 'lines in a Log (the first, unless named)'],
-    ['ui.toast(message, { error })', 'a toast in the app'],
-    [
-      'await run(command, { log, env, cwd })',
-      'a shell command in the project’s folder: { code, output }; its lines in the first Log, or log: id, or log: false',
-    ],
-    ['await sleep(ms)', 'a pause'],
-    ['project', '{ id, name, folder }'],
-    ['console.log, fetch, setTimeout', 'as in Node; console goes to the first Log'],
-  ];
-  return (
-    <details className="text-2xs leading-4 text-[var(--node-muted)]">
-      <summary className="cursor-pointer select-none hover:text-[var(--node-fg)]">What a script can use</summary>
-      <p className="mt-1.5 mb-1">The body of an async function, run in Node on the server, with:</p>
-      <dl className="m-0 flex flex-col gap-1">
-        {items.map(([name, what]) => (
-          <div key={name}>
-            <dt className="font-mono text-[var(--node-fg)]">{name}</dt>
-            <dd className="m-0 ps-2">{what}</dd>
-          </div>
-        ))}
-      </dl>
-    </details>
-  );
-}

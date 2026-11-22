@@ -2,10 +2,10 @@
 // where there's room; dragging one onto the canvas puts it where it's let
 // go (an outline of its size follows the pointer). The pointer is captured
 // by the entry pressed, so the drag goes on over the canvas and comes back
-// here as it ends.
+// here as it ends. A finger swiping up or down scrolls the palette instead.
 
 import { type PointerEvent as ReactPointerEvent, useRef, useState } from 'react';
-import { cn } from '@hyperpane/ui';
+import { cn, useTouch } from '@hyperpane/ui';
 import { TYPES, type WidgetType } from '../../shared/index.ts';
 import { PALETTE, REGISTRY } from '../widgets/registry.ts';
 
@@ -23,6 +23,7 @@ export function Palette({
   onAdd,
   onDrop,
   scale = 1,
+  className,
 }: {
   /** The canvas's scale, for the dragged outline's size. */
   scale?: number;
@@ -30,7 +31,9 @@ export function Palette({
   /** Let go at (x, y) in the window: the editor puts it on the canvas if
    * that's over it. */
   onDrop(type: WidgetType, x: number, y: number): void;
+  className?: string;
 }) {
+  const hint = useTouch() ? 'Tap to add, or drag onto the canvas.' : 'Click to add, or drag onto the canvas.';
   const press = useRef<{ type: WidgetType; x0: number; y0: number; moved: boolean; pointer: number } | null>(null);
   const [ghost, setGhost] = useState<PaletteDrag | null>(null);
 
@@ -57,44 +60,49 @@ export function Palette({
   };
 
   return (
-    <div className="flex w-[11.5rem] flex-none flex-col overflow-y-auto border-r border-[var(--node-border)] bg-[var(--node-header)] px-2.5 py-2.5">
+    <div
+      className={cn(
+        'flex w-[11.5rem] flex-none flex-col overflow-y-auto border-r border-[var(--node-border)] bg-[var(--node-header)] px-2.5 py-2.5',
+        className,
+      )}
+    >
       {PALETTE.map((section) => (
         <div key={section.title} className="mb-3">
           <div className="px-0.5 pb-1.5 text-[10px] leading-4 font-semibold tracking-wider text-[var(--node-muted)] uppercase">{section.title}</div>
           <div className="grid grid-cols-2 gap-1.5">
-          {section.types.map((type) => {
-            const entry = REGISTRY[type];
-            const Icon = entry.icon;
-            return (
-              <button
-                key={type}
-                type="button"
-                title={`${entry.hint} Click to add, or drag onto the canvas.`}
-                className={cn(
-                  'rounded-control flex h-14 min-w-0 cursor-grab touch-none flex-col items-center justify-center gap-1.5 border border-[var(--node-border)] bg-[var(--node-bg)] px-1 text-2xs text-[var(--node-fg)]',
-                  'transition-colors duration-100 hover:border-[color-mix(in_srgb,var(--node-accent)_55%,transparent)] hover:bg-[color-mix(in_srgb,var(--node-accent)_8%,var(--node-bg))] active:cursor-grabbing',
-                  ghost?.type === type && 'border-[var(--node-accent)]',
-                )}
-                onPointerDown={(e) => down(e, type)}
-                onPointerMove={move}
-                onPointerUp={(e) => up(e, true)}
-                onPointerCancel={(e) => up(e, false)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onAdd(type);
-                  }
-                }}
-              >
-                <Icon className="size-4 flex-none text-[var(--node-muted)]" />
-                <span className="max-w-full truncate leading-3">{entry.title}</span>
-              </button>
-            );
-          })}
+            {section.types.map((type) => {
+              const entry = REGISTRY[type];
+              const Icon = entry.icon;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  title={`${entry.hint} ${hint}`}
+                  className={cn(
+                    'rounded-control flex h-14 min-w-0 cursor-grab touch-pan-y flex-col items-center justify-center gap-1.5 border border-[var(--node-border)] bg-[var(--node-bg)] px-1 text-2xs text-[var(--node-fg)]',
+                    'transition-colors duration-100 hover:border-[color-mix(in_srgb,var(--node-accent)_55%,transparent)] hover:bg-[color-mix(in_srgb,var(--node-accent)_8%,var(--node-bg))] active:cursor-grabbing',
+                    ghost?.type === type && 'border-[var(--node-accent)]',
+                  )}
+                  onPointerDown={(e) => down(e, type)}
+                  onPointerMove={move}
+                  onPointerUp={(e) => up(e, true)}
+                  onPointerCancel={(e) => up(e, false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onAdd(type);
+                    }
+                  }}
+                >
+                  <Icon className="size-4 flex-none text-[var(--node-muted)]" />
+                  <span className="max-w-full truncate leading-3">{entry.title}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       ))}
-      <p className="m-0 mt-auto px-0.5 text-2xs leading-4 text-[var(--node-muted)]">Click to add, or drag onto the canvas.</p>
+      <p className="m-0 mt-auto px-0.5 text-2xs leading-4 text-[var(--node-muted)]">{hint}</p>
       {ghost && <Ghost drag={ghost} scale={scale} />}
     </div>
   );

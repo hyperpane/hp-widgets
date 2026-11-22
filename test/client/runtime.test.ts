@@ -19,7 +19,17 @@ function panel(): Panel {
   const warn = newWidget('text', 'warn', { x: 0, y: 120 });
   warn.visibleWhen = "env == 'prod'";
   const count = newWidget('number', 'count', { x: 0, y: 160 });
-  return { id: 'p', name: 'P', width: 400, height: 400, widgets: [env, confirm, go, warn, count, newWidget('log', 'out', { x: 0, y: 220 })] };
+  return {
+    id: 'p',
+    name: 'P',
+    width: 400,
+    height: 400,
+    widgets: [env, confirm, go, warn, count, newWidget('log', 'out', { x: 0, y: 220 })],
+    inputs: [],
+    outputs: [],
+    onRun: '',
+    runOnInput: false,
+  };
 }
 
 test('ops: set, prop, log, clear', () => {

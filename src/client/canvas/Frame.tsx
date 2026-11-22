@@ -47,7 +47,8 @@ export function Frame({
       style={boxStyle(widget)}
       onPointerDown={(e) => onPress(e, 'move')}
     >
-      <div className="pointer-events-none h-full w-full">
+      {/* Placed at a size: the kit's controls keep it with a finger too. */}
+      <div data-fixed-size className="pointer-events-none h-full w-full">
         <WidgetBody
           widget={widget}
           props={widget.props}
@@ -75,7 +76,12 @@ export function Frame({
             <span
               key={h}
               aria-hidden
-              className={cn('absolute size-2 rounded-[2px] border border-[var(--node-accent)] bg-[var(--node-bg)]', HANDLE_PLACE[h])}
+              className={cn(
+                'absolute size-2 rounded-[2px] border border-[var(--node-accent)] bg-[var(--node-bg)]',
+                // A finger's room around it, the handle drawn as it is.
+                "touch:before:absolute touch:before:-inset-3 touch:before:content-['']",
+                HANDLE_PLACE[h],
+              )}
               onPointerDown={(e) => {
                 e.stopPropagation();
                 onPress(e, h);

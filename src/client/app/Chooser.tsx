@@ -100,7 +100,7 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
             <li key={p.id}>
               <button
                 type="button"
-                className="rounded-chip flex h-9 w-full items-center gap-2.5 px-2 text-left hover:bg-[var(--node-hover)]"
+                className="rounded-chip flex h-9 w-full items-center gap-2.5 px-2 text-left hover:bg-[var(--node-hover)] touch:h-11"
                 onClick={() => onOpen(p.id)}
                 onContextMenu={(e) => rowMenu(e, p)}
               >

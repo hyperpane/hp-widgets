@@ -1,10 +1,11 @@
 // The window's toolbar: View or Dev (View whenever a window opens), the
 // panel's name, and what each mode needs: Undo and Redo and whether it's
 // saved in Dev; Stop while scripts run, and Reset in View. Export and a
-// menu (rename, duplicate, import, other panels, delete) in both.
+// menu (rename, duplicate, import, other panels, delete) in both; narrow,
+// Export is in the menu only.
 
 import { keys } from '@hyperpane/sdk/client';
-import { NodeButton, SegmentedControl, Toolbar, ToolbarSeparator, ToolbarSpacer, ToolButton } from '@hyperpane/ui';
+import { NodeButton, SegmentedControl, Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarSpacer, ToolButton } from '@hyperpane/ui';
 import { Download, Ellipsis, LoaderCircle, Pencil, Play, Redo2, RotateCcw, Square, Undo2 } from 'lucide-react';
 import type { PanelState } from './usePanel.ts';
 
@@ -95,8 +96,10 @@ export function PanelToolbar({
           <ToolButton label="Reset the values" icon={RotateCcw} onClick={onReset} />
         </>
       )}
-      <ToolbarSeparator />
-      <ToolButton label="Export as .hpw" icon={Download} onClick={onExport} />
+      <ToolbarGroup hideBelow="sm">
+        <ToolbarSeparator />
+        <ToolButton label="Export as .hpw" icon={Download} onClick={onExport} />
+      </ToolbarGroup>
       <ToolButton label="More" icon={Ellipsis} onClick={onMenu} />
     </Toolbar>
   );

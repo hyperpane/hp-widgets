@@ -1,6 +1,8 @@
 // Dev mode's inspector, at the right: the selected widget's, or the
-// panel's when nothing is selected. Wider on demand, for a script.
+// panel's when nothing is selected (a narrow window's sheet, it fills).
+// A script is written in an editor of its own (ScriptField).
 
+import { cn } from '@hyperpane/ui';
 import type { Panel } from '../../shared/index.ts';
 import { PanelInspector } from './PanelInspector.tsx';
 import { type Edit, WidgetInspector } from './WidgetInspector.tsx';
@@ -12,8 +14,7 @@ export function Inspector({
   onSelect,
   onDelete,
   onDuplicate,
-  wide,
-  onWide,
+  className,
 }: {
   panel: Panel;
   selected: string | null;
@@ -21,12 +22,11 @@ export function Inspector({
   onSelect(id: string | null): void;
   onDelete(id: string): void;
   onDuplicate(id: string): void;
-  wide: boolean;
-  onWide(wide: boolean): void;
+  className?: string;
 }) {
   const widget = selected ? panel.widgets.find((w) => w.id === selected) : undefined;
   return (
-    <aside aria-label="Inspector" className={`flex flex-none flex-col overflow-y-auto border-l border-[var(--node-border)] ${wide ? 'w-[480px]' : 'w-72'}`}>
+    <aside aria-label="Inspector" className={cn('flex w-72 flex-none flex-col overflow-y-auto border-l border-[var(--node-border)]', className)}>
       {widget ? (
         <WidgetInspector
           // A widget of its own each: fields typed into don't carry over.
@@ -37,8 +37,6 @@ export function Inspector({
           onRenamed={onSelect}
           onDelete={() => onDelete(widget.id)}
           onDuplicate={() => onDuplicate(widget.id)}
-          wide={wide}
-          onWide={onWide}
         />
       ) : (
         <PanelInspector panel={panel} edit={edit} onSelect={onSelect} />

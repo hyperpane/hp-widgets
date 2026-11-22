@@ -57,3 +57,5 @@ export const MAX_WIDGETS = 500;
 export const MAX_SCRIPT = 100_000;
 export const MAX_TEXT = 10_000;
 export const MAX_OPTIONS = 200;
+/** How many in- or out-ports a panel may have. */
+export const MAX_PORTS = 16;

@@ -83,32 +83,38 @@ export function DevCanvas({
   return (
     <div ref={fit} className="flex min-h-0 min-w-0 flex-1 overflow-auto bg-[color-mix(in_srgb,var(--node-header)_60%,black)]" style={{ padding: FIT_PAD }}>
       <div className="m-auto flex flex-none flex-col items-center gap-2">
-      <div style={{ width: panel.width * scale, height: panel.height * scale }}>
-      <div
-        ref={surface}
-        data-surface
-        className="rounded-surface relative origin-top-left shadow-raised ring-1 ring-[var(--node-border)]"
-        style={{ width: panel.width, height: panel.height, transform: scale === 1 ? undefined : `scale(${scale})`, ...GRID_STYLE }}
-        onPointerDown={(e) => {
-          if (e.target === e.currentTarget && e.button === 0) onSelect(null);
-        }}
-        onPointerMove={move}
-        onPointerUp={(e) => end(e, true)}
-        onPointerCancel={(e) => end(e, false)}
-        onLostPointerCapture={(e) => end(e, true)}
-      >
-        {drawOrder(widgets).map((w) => (
-          <Frame key={w.id} widget={w} selected={w.id === selected} dragging={!!live && w.id === gesture.current?.g.id} onPress={(e, h) => press(e, w, h)} />
-        ))}
-        {children}
-      </div>
-      </div>
-      <div className="flex items-center gap-2 text-2xs leading-4 text-[var(--node-muted)] tabular-nums">
-        <span>
-          {panel.width} × {panel.height}
-        </span>
-        {scale < 1 && <span>· {Math.round(scale * 100)}%</span>}
-      </div>
+        <div style={{ width: panel.width * scale, height: panel.height * scale }}>
+          <div
+            ref={surface}
+            data-surface
+            className="rounded-surface relative origin-top-left shadow-raised ring-1 ring-[var(--node-border)]"
+            style={{ width: panel.width, height: panel.height, transform: scale === 1 ? undefined : `scale(${scale})`, ...GRID_STYLE }}
+            onPointerDown={(e) => {
+              if (e.target === e.currentTarget && e.button === 0) onSelect(null);
+            }}
+            onPointerMove={move}
+            onPointerUp={(e) => end(e, true)}
+            onPointerCancel={(e) => end(e, false)}
+            onLostPointerCapture={(e) => end(e, true)}
+          >
+            {drawOrder(widgets).map((w) => (
+              <Frame
+                key={w.id}
+                widget={w}
+                selected={w.id === selected}
+                dragging={!!live && w.id === gesture.current?.g.id}
+                onPress={(e, h) => press(e, w, h)}
+              />
+            ))}
+            {children}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-2xs leading-4 text-[var(--node-muted)] tabular-nums">
+          <span>
+            {panel.width} × {panel.height}
+          </span>
+          {scale < 1 && <span>· {Math.round(scale * 100)}%</span>}
+        </div>
       </div>
     </div>
   );

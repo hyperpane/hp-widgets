@@ -1,12 +1,16 @@
 // The inspector with nothing selected: the panel itself, its name and its
-// canvas's size (never smaller than what's on it), and its widgets, a
-// click away.
+// canvas's size (never smaller than what's on it), its ports and what it
+// does when it's run (a workflow's step), and its widgets, a click away.
 
 import { MAX_CANVAS, MIN_CANVAS, type Panel } from '../../shared/index.ts';
 import { canvasFits } from '../lib/layout.ts';
 import { REGISTRY } from '../widgets/registry.ts';
-import { NumberField, Section, TextField } from './fields.tsx';
+import { LinesField, NumberField, Section, SwitchField, TextField } from './fields.tsx';
+import { ScriptField } from './ScriptField.tsx';
 import type { Edit } from './WidgetInspector.tsx';
+
+const RUN_PLACEHOLDER =
+  "// Runs on the server when the panel is run: its Run button, or a value\n// coming in. What's linked to its in-ports is in `inputs`.\nconst text = String(inputs.file ?? '');\nui.set('status', text.length + ' characters');\noutput('result', text.toUpperCase());";
 
 export function PanelInspector({ panel, edit, onSelect }: { panel: Panel; edit: Edit; onSelect(id: string): void }) {
   const fits = canvasFits(panel);
@@ -23,6 +27,27 @@ export function PanelInspector({ panel, edit, onSelect }: { panel: Panel; edit: 
           <NumberField label="Height" value={panel.height} min={MIN_CANVAS.height} max={MAX_CANVAS} step={8} onChange={(v) => size('height', v)} />
         </div>
       </Section>
+      <Section title="Ports">
+        <LinesField label="In" value={panel.inputs} onChange={(inputs) => edit((p) => ({ ...p, inputs: inputs.map((n) => n.trim()) }), 'panel.inputs')} />
+        <LinesField label="Out" value={panel.outputs} onChange={(outputs) => edit((p) => ({ ...p, outputs: outputs.map((n) => n.trim()) }), 'panel.outputs')} />
+        <p className="m-0 text-2xs leading-4 text-[var(--node-muted)]">
+          Link them in Nodes mode. A script reads what came in as inputs.name and sends with output('name', value).
+        </p>
+      </Section>
+      <Section title="On run">
+        <ScriptField
+          title={`${panel.name} · On run`}
+          label="The panel’s script, run when it’s run"
+          value={panel.onRun}
+          placeholder={RUN_PLACEHOLDER}
+          onChange={(onRun) => edit((p) => ({ ...p, onRun }), 'panel.onRun')}
+        />
+        <SwitchField
+          label="Run when a value comes in"
+          value={panel.runOnInput}
+          onChange={(runOnInput) => edit((p) => ({ ...p, runOnInput }), 'panel.runOnInput')}
+        />
+      </Section>
       <Section title={`Widgets (${panel.widgets.length})`}>
         {panel.widgets.length === 0 ? (
           <p className="rounded-control m-0 border border-dashed border-[var(--node-border)] px-3 py-4 text-center text-2xs leading-4 text-[var(--node-muted)]">
@@ -36,7 +61,7 @@ export function PanelInspector({ panel, edit, onSelect }: { panel: Panel; edit: 
                 <li key={w.id}>
                   <button
                     type="button"
-                    className="rounded-control group/row flex h-7 w-full items-center gap-2 px-1 text-left text-xs hover:bg-[var(--node-hover)]"
+                    className="rounded-control group/row flex h-7 w-full touch:h-10 items-center gap-2 px-1 text-left text-xs hover:bg-[var(--node-hover)]"
                     onClick={() => onSelect(w.id)}
                   >
                     <span className="rounded-chip flex size-5 flex-none items-center justify-center border border-[var(--node-border)] bg-[var(--node-header)] text-[var(--node-muted)] group-hover/row:text-[var(--node-fg)]">

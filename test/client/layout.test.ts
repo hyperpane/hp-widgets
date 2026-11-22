@@ -15,7 +15,7 @@ const canvas = { width: 400, height: 300 };
 const box = { x: 40, y: 40, w: 80, h: 32 };
 
 function panelOf(...widgets: ReturnType<typeof newWidget>[]): Panel {
-  return { id: 'p', name: 'P', width: canvas.width, height: canvas.height, widgets };
+  return { id: 'p', name: 'P', width: canvas.width, height: canvas.height, widgets, inputs: [], outputs: [], onRun: '', runOnInput: false };
 }
 
 describe('snap', () => {

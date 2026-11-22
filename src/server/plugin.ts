@@ -77,9 +77,12 @@ export const widgets = json((host: Host) => {
       invoke: async (req, out) => {
         const project = projectInfo(req.project);
         const panel = await store.load(project.id, req.panel);
-        const widget = panel.widgets.find((w) => w.id === req.widget);
-        if (!widget) throw new PluginError(`There’s no widget “${String(req.widget)}” in this panel.`);
-        if (!TYPES[widget.type].event || !widget.script.trim()) {
+        // The panel's own script (run), or a widget's (a click, a change).
+        const whole = req.type === 'run';
+        const widget = whole ? null : panel.widgets.find((w) => w.id === req.widget);
+        if (!whole && !widget) throw new PluginError(`There’s no widget “${String(req.widget)}” in this panel.`);
+        const script = widget ? (TYPES[widget.type].event ? widget.script : '') : panel.onRun;
+        if (!script.trim()) {
           out.emit({ type: 'done', ok: true } satisfies Done);
           return;
         }
@@ -93,9 +96,11 @@ export const widgets = json((host: Host) => {
             host,
             project,
             panel,
-            widget,
-            event: { type: req.type === 'change' ? 'change' : 'click', value: (req.value ?? null) as Value },
+            name: widget ? widget.id : 'run',
+            script,
+            event: { type: whole ? 'run' : req.type === 'change' ? 'change' : 'click', value: (req.value ?? null) as Value },
             values,
+            inputs: typeof req.inputs === 'object' && req.inputs !== null ? (req.inputs as Record<string, unknown>) : {},
             emit: (op) => void out.emit(op),
             signal,
           });

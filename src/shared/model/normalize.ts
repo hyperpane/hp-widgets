@@ -4,7 +4,7 @@
 // type takes, and nothing else. What had to change is said, a line each,
 // so an import can tell the user what it dropped.
 
-import { CANVAS, GRID, MAX_CANVAS, MAX_OPTIONS, MAX_SCRIPT, MAX_TEXT, MAX_WIDGETS, MIN_SIZE, propsOf, TYPES } from './defaults.ts';
+import { CANVAS, GRID, MAX_CANVAS, MAX_OPTIONS, MAX_PORTS, MAX_SCRIPT, MAX_TEXT, MAX_WIDGETS, MIN_SIZE, propsOf, TYPES } from './defaults.ts';
 import { idProblem, uniqueId } from './ids.ts';
 import type { Panel, Widget, WidgetProps, WidgetType } from './types.ts';
 import { WIDGET_TYPES } from './types.ts';
@@ -144,12 +144,41 @@ export function normalizePanel(raw: unknown, o: { id?: string } = {}): Normalize
     });
   }
 
-  return { panel: { id: o.id ?? (typeof given.id === 'string' ? given.id : ''), name, width, height, widgets }, warnings };
+  const inputs = portNames(given.inputs, [], 'in', warnings);
+  // `values` is the panel's own out-port already.
+  const outputs = portNames(given.outputs, ['values'], 'out', warnings);
+  const onRun = text(given.onRun, MAX_SCRIPT);
+  const runOnInput = given.runOnInput === true;
+
+  return { panel: { id: o.id ?? (typeof given.id === 'string' ? given.id : ''), name, width, height, widgets, inputs, outputs, onRun, runOnInput }, warnings };
+}
+
+/** A list of port names: identifiers, each once, at most MAX_PORTS. */
+function portNames(raw: unknown, taken: string[], side: 'in' | 'out', warnings: string[]): string[] {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) {
+    warnings.push(`Its ${side}-ports weren’t a list: left out.`);
+    return [];
+  }
+  const names: string[] = [];
+  for (const item of raw) {
+    const name = typeof item === 'string' ? item.trim() : '';
+    if (idProblem(name, [...taken, ...names])) {
+      warnings.push(`Left out ${side}-port “${String(item).slice(0, 40)}”: ${idProblem(name, [...taken, ...names])?.replace('widget', 'port')}`);
+      continue;
+    }
+    if (names.length === MAX_PORTS) {
+      warnings.push(`Only the first ${MAX_PORTS} ${side}-ports were kept.`);
+      break;
+    }
+    names.push(name);
+  }
+  return names;
 }
 
 /** A new, empty panel. */
 export function emptyPanel(id: string, name: string): Panel {
-  return { id, name, width: CANVAS.width, height: CANVAS.height, widgets: [] };
+  return { id, name, width: CANVAS.width, height: CANVAS.height, widgets: [], inputs: [], outputs: [], onRun: '', runOnInput: false };
 }
 
 /** A new widget of a type, at a place, with its defaults. */

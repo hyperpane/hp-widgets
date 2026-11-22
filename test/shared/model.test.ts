@@ -14,6 +14,10 @@ describe('normalizePanel', () => {
       width: 640,
       height: 480,
       widgets: [newWidget('button', 'deploy', { x: 16, y: 16 }), newWidget('select', 'env', { x: 16, y: 64 })],
+      inputs: [],
+      outputs: [],
+      onRun: '',
+      runOnInput: false,
     };
     panel.widgets[0].script = "await run('echo hi')";
     const { panel: out, warnings } = normalizePanel(structuredClone(panel), { id: 'p1' });
@@ -100,9 +104,21 @@ describe('normalizePanel', () => {
   test('anything else is an empty panel', () => {
     for (const junk of [null, 5, 'x', []]) {
       const { panel, warnings } = normalizePanel(junk, { id: 'p' });
-      assert.deepEqual(panel, { id: 'p', name: 'Panel', width: 864, height: 528, widgets: [] });
+      assert.deepEqual(panel, { id: 'p', name: 'Panel', width: 864, height: 528, widgets: [], inputs: [], outputs: [], onRun: '', runOnInput: false });
       assert.equal(warnings.length, 1);
     }
+  });
+
+  test('ports are identifiers, each once, and an out-port is never values', () => {
+    const { panel, warnings } = normalizePanel(
+      { inputs: ['file', 'file', '2x', 'prompt'], outputs: ['values', 'answer'], onRun: 'x()', runOnInput: 'yes' },
+      { id: 'p' },
+    );
+    assert.deepEqual(panel.inputs, ['file', 'prompt']);
+    assert.deepEqual(panel.outputs, ['answer']);
+    assert.equal(panel.onRun, 'x()');
+    assert.equal(panel.runOnInput, false);
+    assert.equal(warnings.length, 3);
   });
 });
 

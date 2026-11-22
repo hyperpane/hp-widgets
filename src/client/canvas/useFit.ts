@@ -4,10 +4,7 @@
 
 import { useLayoutEffect, useState } from 'react';
 
-export function useFit(
-  size: { width: number; height: number },
-  { pad, least, height = true }: { pad: number; least: number; height?: boolean },
-) {
+export function useFit(size: { width: number; height: number }, { pad, least, height = true }: { pad: number; least: number; height?: boolean }) {
   // A callback ref: the box may come and go (an empty panel has none).
   const [el, box] = useState<HTMLDivElement | null>(null);
   const [room, setRoom] = useState<{ w: number; h: number } | null>(null);

@@ -29,6 +29,8 @@ export type Op =
   | { type: 'log'; id: string; text: string }
   | { type: 'clear'; id: string }
   | { type: 'toast'; message: string; error?: boolean }
+  /** A value out at one of the panel's out-ports (`output(port, value)`). */
+  | { type: 'output'; port: string; value: unknown }
   /** The end: it returned, threw (`error`, with the line it was on), or was
    * stopped. */
   | { type: 'done'; ok: boolean; error?: string; cancelled?: boolean };

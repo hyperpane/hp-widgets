@@ -6,7 +6,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHost } from '@hyperpane/sdk/client';
-import type { Panel } from '../../shared/index.ts';
+import { normalizePanel, type Panel } from '../../shared/index.ts';
 import { emptyHistory, type History, record, redo as redoStep, undo as undoStep } from '../lib/history.ts';
 
 const PLUGIN = 'widgets';
@@ -43,12 +43,16 @@ export function usePanel(id: string, project: string, window: number): PanelStat
   const waiting = useRef<Panel | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saving = useRef<Promise<void>>(Promise.resolve());
+  /** A panel as the server part sent it, sound here: one from an older part
+   * lacks what's newer (its ports, its run). */
+  const sound = (p: Panel) => normalizePanel(p, { id: p.id }).panel;
 
   useEffect(() => {
     let live = true;
     host.call<Panel>(PLUGIN, { op: 'load', project, id }).then(
-      (p) => {
+      (raw) => {
         if (!live) return;
+        const p = sound(raw);
         current.current = p;
         setPanel(p);
       },
@@ -62,13 +66,14 @@ export function usePanel(id: string, project: string, window: number): PanelStat
   // Saved by another window (or deleted).
   useEffect(
     () =>
-      host.subscribe<{ panel: Panel | null; by: number | null }>(PLUGIN, { op: 'watch', project, id }, ({ panel: p, by }) => {
+      host.subscribe<{ panel: Panel | null; by: number | null }>(PLUGIN, { op: 'watch', project, id }, ({ panel: raw, by }) => {
         if (by === window) return;
-        if (!p) {
+        if (!raw) {
           setError('This panel was deleted.');
           return;
         }
         if (waiting.current) return;
+        const p = sound(raw);
         current.current = p;
         setPanel(p);
       }),
