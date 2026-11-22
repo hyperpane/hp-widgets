@@ -5,7 +5,7 @@
 // here as it ends. A finger swiping up or down scrolls the palette instead.
 
 import { type PointerEvent as ReactPointerEvent, useRef, useState } from 'react';
-import { cn, useTouch } from '@hyperpane/ui';
+import { cn, styles, useTouch } from '@hyperpane/ui';
 import { TYPES, type WidgetType } from '../../shared/index.ts';
 import { PALETTE, REGISTRY } from '../widgets/registry.ts';
 
@@ -60,15 +60,10 @@ export function Palette({
   };
 
   return (
-    <div
-      className={cn(
-        'flex w-[11.5rem] flex-none flex-col overflow-y-auto border-r border-[var(--node-border)] bg-[var(--node-header)] px-2.5 py-2.5',
-        className,
-      )}
-    >
+    <div className={cn('flex w-[11.5rem] flex-none flex-col gap-3 overflow-y-auto border-r border-[var(--node-border)] p-3', className)}>
       {PALETTE.map((section) => (
-        <div key={section.title} className="mb-3">
-          <div className="px-0.5 pb-1.5 text-[10px] leading-4 font-semibold tracking-wider text-[var(--node-muted)] uppercase">{section.title}</div>
+        <div key={section.title}>
+          <div className="flex h-7 items-center px-0.5 text-xs font-medium text-[var(--node-muted)]">{section.title}</div>
           <div className="grid grid-cols-2 gap-1.5">
             {section.types.map((type) => {
               const entry = REGISTRY[type];
@@ -79,9 +74,10 @@ export function Palette({
                   type="button"
                   title={`${entry.hint} ${hint}`}
                   className={cn(
-                    'rounded-control flex h-14 min-w-0 cursor-grab touch-pan-y flex-col items-center justify-center gap-1.5 border border-[var(--node-border)] bg-[var(--node-bg)] px-1 text-2xs text-[var(--node-fg)]',
-                    'transition-colors duration-100 hover:border-[color-mix(in_srgb,var(--node-accent)_55%,transparent)] hover:bg-[color-mix(in_srgb,var(--node-accent)_8%,var(--node-bg))] active:cursor-grabbing',
-                    ghost?.type === type && 'border-[var(--node-accent)]',
+                    'rounded-control group flex h-14 min-w-0 cursor-grab touch-pan-y flex-col items-center justify-center gap-1.5 border border-transparent bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-1 text-2xs text-[var(--node-fg)]',
+                    'transition-colors duration-100 hover:bg-[color-mix(in_srgb,var(--node-fg)_8%,transparent)] active:cursor-grabbing',
+                    styles.focusRing,
+                    ghost?.type === type && 'border-[var(--node-accent)] bg-[color-mix(in_srgb,var(--node-accent)_8%,transparent)]',
                   )}
                   onPointerDown={(e) => down(e, type)}
                   onPointerMove={move}
@@ -94,7 +90,7 @@ export function Palette({
                     }
                   }}
                 >
-                  <Icon className="size-4 flex-none text-[var(--node-muted)]" />
+                  <Icon className="size-4 flex-none text-[var(--node-muted)] transition-colors duration-100 group-hover:text-[var(--node-fg)]" />
                   <span className="max-w-full truncate leading-3">{entry.title}</span>
                 </button>
               );
@@ -102,7 +98,7 @@ export function Palette({
           </div>
         </div>
       ))}
-      <p className="m-0 mt-auto px-0.5 text-2xs leading-4 text-[var(--node-muted)]">{hint}</p>
+      <p className="m-0 mt-auto px-0.5 pt-1 text-2xs leading-4 text-[var(--node-muted)]">{hint}</p>
       {ghost && <Ghost drag={ghost} scale={scale} />}
     </div>
   );

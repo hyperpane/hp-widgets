@@ -38,7 +38,7 @@ export function PanelToolbar({
   return (
     <Toolbar>
       <SegmentedControl
-        size="xs"
+        size="sm"
         label="Mode"
         value={mode}
         onValueChange={(v) => onMode(v as Mode)}

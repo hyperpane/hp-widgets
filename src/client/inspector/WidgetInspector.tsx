@@ -3,7 +3,7 @@
 // box, when it shows and when it takes input, and its script.
 
 import { Copy, Trash } from 'lucide-react';
-import { ToolButton } from '@hyperpane/ui';
+import { Input, ToolButton } from '@hyperpane/ui';
 import { conditionProblem, type Panel, TYPES, type Value, type Widget, type WidgetProps } from '../../shared/index.ts';
 import { renameIn, renameProblem } from '../lib/ids.ts';
 import { placed } from '../lib/layout.ts';
@@ -60,7 +60,7 @@ export function WidgetInspector({
           </span>
         }
       >
-        <div className="flex items-center gap-2 text-2xs text-[var(--node-muted)]">
+        <div className="-mt-1 flex items-start gap-2 text-2xs leading-4 text-[var(--node-muted)]">
           <Icon className="size-3.5 flex-none" />
           <span>{entry.hint}</span>
         </div>
@@ -190,13 +190,16 @@ function ConditionField({ label, value, ids, onChange }: { label: string; value:
       hint={value ? undefined : 'Empty: always. Widgets by id, e.g. env == "prod" && confirm'}
     >
       {(id) => (
-        <input
+        <Input
           id={id}
+          variant="secondary"
+          size="sm"
           value={value}
+          error={!!problem}
           spellCheck={false}
           placeholder="always"
           onChange={(e) => onChange(e.target.value)}
-          className={`rounded-control h-6 w-full border touch:h-9 bg-transparent px-2 font-mono text-xs text-[var(--node-fg)] outline-none placeholder:text-[var(--node-muted)] focus:border-[var(--node-accent)] ${problem ? 'border-[var(--ansi-1)]' : 'border-[var(--node-border)]'}`}
+          className="font-mono text-xs"
         />
       )}
     </Row>

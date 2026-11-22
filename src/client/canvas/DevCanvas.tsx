@@ -81,13 +81,14 @@ export function DevCanvas({
   };
 
   return (
-    <div ref={fit} className="flex min-h-0 min-w-0 flex-1 overflow-auto bg-[color-mix(in_srgb,var(--node-header)_60%,black)]" style={{ padding: FIT_PAD }}>
+    // The canvas a step off the window's color, the panel on it in the window's own.
+    <div ref={fit} className="flex min-h-0 min-w-0 flex-1 overflow-auto bg-[color-mix(in_srgb,var(--node-bg),var(--node-fg)_4%)]" style={{ padding: FIT_PAD }}>
       <div className="m-auto flex flex-none flex-col items-center gap-2">
         <div style={{ width: panel.width * scale, height: panel.height * scale }}>
           <div
             ref={surface}
             data-surface
-            className="rounded-surface relative origin-top-left shadow-raised ring-1 ring-[var(--node-border)]"
+            className="rounded-surface relative origin-top-left ring-1 ring-[var(--node-border)]"
             style={{ width: panel.width, height: panel.height, transform: scale === 1 ? undefined : `scale(${scale})`, ...GRID_STYLE }}
             onPointerDown={(e) => {
               if (e.target === e.currentTarget && e.button === 0) onSelect(null);

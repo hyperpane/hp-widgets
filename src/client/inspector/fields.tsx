@@ -10,7 +10,7 @@ import { Input, Label, Select, Switch, Textarea, cn } from '@hyperpane/ui';
 export function Row({ label, hint, error, children }: { label: string; hint?: ReactNode; error?: string | null; children(id: string): ReactNode }) {
   const id = useId();
   return (
-    <div className="flex min-w-0 flex-col gap-1">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <Label htmlFor={id} className="text-2xs leading-4 font-medium text-[var(--node-muted)]">
         {label}
       </Label>
@@ -24,12 +24,13 @@ export function Row({ label, hint, error, children }: { label: string; hint?: Re
   );
 }
 
-/** A section of the inspector, under a quiet heading. */
+/** A section of the inspector, under a quiet heading; one line between
+ * sections. */
 export function Section({ title, children, aside }: { title: string; children: ReactNode; aside?: ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 border-b border-[var(--node-border)] px-3.5 py-3.5 last:border-b-0">
-      <div className="flex h-4 items-center justify-between gap-2">
-        <h3 className="m-0 text-[10px] leading-4 font-semibold tracking-wider text-[var(--node-muted)] uppercase">{title}</h3>
+    <section className="flex flex-col gap-3 border-b border-[var(--node-border)] px-3 pt-2 pb-4 last:border-b-0">
+      <div className="-me-1 flex h-7 items-center justify-between gap-2">
+        <h3 className="m-0 text-xs font-medium text-[var(--node-fg)]">{title}</h3>
         {aside}
       </div>
       {children}
@@ -60,6 +61,7 @@ export function TextField({
         multiline ? (
           <Textarea
             id={id}
+            variant="secondary"
             size="sm"
             className={cn('min-h-14 text-xs', mono && 'font-mono')}
             value={value}
@@ -70,7 +72,8 @@ export function TextField({
         ) : (
           <Input
             id={id}
-            size="xs"
+            variant="secondary"
+            size="sm"
             className={cn('text-xs', mono && 'font-mono')}
             value={value}
             placeholder={placeholder}
@@ -112,7 +115,8 @@ export function CheckedField({
       {(id) => (
         <Input
           id={id}
-          size="xs"
+          variant="secondary"
+          size="sm"
           className={cn('text-xs', mono && 'font-mono')}
           value={typed}
           error={!!problem}
@@ -152,7 +156,8 @@ export function NumberField({
       {(id) => (
         <Input
           id={id}
-          size="xs"
+          variant="secondary"
+          size="sm"
           type="number"
           className="text-xs tabular-nums"
           value={typed}
@@ -182,7 +187,11 @@ export function ChoiceField({
   options: { value: string; label: string }[];
   onChange(v: string): void;
 }) {
-  return <Row label={label}>{() => <Select size="xs" className="w-full" options={options} value={value} triggerLabel={label} onValueChange={onChange} />}</Row>;
+  return (
+    <Row label={label}>
+      {() => <Select variant="secondary" size="sm" className="w-full" options={options} value={value} triggerLabel={label} onValueChange={onChange} />}
+    </Row>
+  );
 }
 
 export function SwitchField({ label, value, onChange }: { label: string; value: boolean; onChange(v: boolean): void }) {
@@ -207,6 +216,7 @@ export function LinesField({ label, value, onChange }: { label: string; value: s
       {(id) => (
         <Textarea
           id={id}
+          variant="secondary"
           size="sm"
           className="min-h-16 text-xs"
           value={typed}

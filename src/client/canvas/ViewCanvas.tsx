@@ -3,8 +3,8 @@
 // shows and what's enabled, and their scripts run on the server.
 
 import { useMemo } from 'react';
-import { Empty, useCompact } from '@hyperpane/ui';
-import { LayoutDashboard } from 'lucide-react';
+import { Empty, NodeButton, useCompact } from '@hyperpane/ui';
+import { LayoutDashboard, Pencil } from 'lucide-react';
 import type { Panel } from '../../shared/index.ts';
 import { shownAll } from '../runtime/conditions.ts';
 import { propsOf } from '../runtime/state.ts';
@@ -35,9 +35,9 @@ export function ViewCanvas({ panel, runtime, onEdit }: { panel: Panel; runtime: 
           title="This panel is empty"
           description="Switch to Dev to lay out its widgets: buttons, fields, logs."
           action={
-            <button type="button" className="text-xs font-medium text-[var(--node-accent)] hover:underline" onClick={onEdit}>
-              Open Dev mode
-            </button>
+            <NodeButton variant="primary" onClick={onEdit}>
+              <Pencil /> Open Dev mode
+            </NodeButton>
           }
         />
       </div>

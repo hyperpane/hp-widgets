@@ -8,7 +8,7 @@
 
 import { type KeyboardEvent, useRef, useState } from 'react';
 import { mod } from '@hyperpane/sdk/client';
-import { DialogHeader, DialogTitle, NodeButton, Sheet, SheetContent, useCompact } from '@hyperpane/ui';
+import { DialogHeader, DialogTitle, NodeButton, Sheet, SheetContent, Toolbar, useCompact } from '@hyperpane/ui';
 import { Plus, SlidersHorizontal } from 'lucide-react';
 import type { WidgetType } from '../../shared/index.ts';
 import { DevCanvas, FIT_PAD } from '../canvas/DevCanvas.tsx';
@@ -134,7 +134,7 @@ export function DevMode({ state }: { state: PanelState }) {
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: the editor's keys, as below.
       <div ref={root} tabIndex={-1} className="flex min-h-0 flex-1 flex-col outline-none" onKeyDown={keys}>
-        <div className="flex h-9 flex-none items-center gap-2 border-b border-[var(--node-border)] px-2 touch:h-12">
+        <Toolbar className="gap-2">
           <NodeButton onClick={() => setSheet('palette')}>
             <Plus /> Add
           </NodeButton>
@@ -142,7 +142,7 @@ export function DevMode({ state }: { state: PanelState }) {
             <SlidersHorizontal />
             <span className="truncate">{selected ?? 'Panel'}</span>
           </NodeButton>
-        </div>
+        </Toolbar>
         {canvas}
         <Sheet open={sheet === 'palette'} onOpenChange={open('palette')}>
           <SheetContent side="start" showClose>

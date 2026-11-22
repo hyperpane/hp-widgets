@@ -8,7 +8,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, Code2 } from 'lucide-react';
-import { Button, NodeButton } from '@hyperpane/ui';
+import { NodeButton } from '@hyperpane/ui';
 import { CodeField } from './CodeField.tsx';
 
 /** How many of its lines the inspector shows. */
@@ -35,12 +35,12 @@ export function ScriptField({
   return (
     <div className="flex flex-col gap-2">
       {value.trim() ? (
-        <pre className="rounded-control m-0 overflow-hidden border border-[var(--node-border)] bg-[var(--node-header)] px-2.5 py-2 font-mono text-2xs leading-4 whitespace-pre text-[var(--node-fg)]">
+        <pre className="rounded-control m-0 overflow-hidden bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-2.5 py-2 font-mono text-2xs leading-4 whitespace-pre text-[var(--node-fg)]">
           {lines.slice(0, PREVIEW_LINES).join('\n')}
           {more > 0 && <span className="block pt-1 text-[var(--node-muted)]">{more === 1 ? '1 more line' : `${more} more lines`}</span>}
         </pre>
       ) : (
-        <p className="rounded-control m-0 border border-dashed border-[var(--node-border)] px-3 py-3 text-center text-2xs leading-4 text-[var(--node-muted)]">
+        <p className="rounded-control m-0 bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-3 py-3 text-center text-2xs leading-4 text-[var(--node-muted)]">
           No code yet: nothing runs.
         </p>
       )}
@@ -91,21 +91,21 @@ function CodePage({
       }}
       className="fixed inset-0 m-0 flex h-dvh max-h-none w-dvw max-w-none flex-col border-0 bg-[var(--node-bg,var(--background))] p-0 text-[var(--node-fg,var(--foreground))] backdrop:bg-transparent"
     >
-      <header className="flex h-11 flex-none items-center gap-2 border-b border-[var(--node-border)] ps-1.5 pe-2 touch:h-12">
-        <NodeButton onClick={onClose} aria-label="Back to the panel">
+      <header className="flex h-11 flex-none items-center gap-2 border-b border-[var(--node-border)] px-2.5 touch:h-12">
+        <NodeButton variant="ghost" className="ps-1.5" onClick={onClose} aria-label="Back to the panel">
           <ChevronLeft /> Panel
         </NodeButton>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">{title}</div>
           <div className="truncate text-2xs text-[var(--node-muted)] max-sm:hidden">JavaScript, run on the server. Saved as you type.</div>
         </div>
-        <Button size="sm" onClick={onClose}>
+        <NodeButton variant="primary" onClick={onClose}>
           Done
-        </Button>
+        </NodeButton>
       </header>
       <div className="flex min-h-0 flex-1 max-md:flex-col">
         <CodeField label={label} value={value} placeholder={placeholder} onChange={onChange} fontSize={13} className="min-h-0 flex-1 rounded-none border-0" />
-        <aside className="w-80 flex-none overflow-y-auto border-l border-[var(--node-border)] px-4 py-3 max-md:max-h-[40%] max-md:w-auto max-md:border-t max-md:border-l-0">
+        <aside className="w-80 flex-none overflow-y-auto border-l border-[var(--node-border)] p-4 max-md:max-h-[40%] max-md:w-auto max-md:border-t max-md:border-l-0">
           <ScriptHelp open />
         </aside>
       </div>
@@ -134,13 +134,13 @@ export function ScriptHelp({ open }: { open?: boolean }) {
   ];
   return (
     <details open={open} className="text-2xs leading-4 text-[var(--node-muted)]">
-      <summary className="cursor-pointer select-none hover:text-[var(--node-fg)]">What a script can use</summary>
-      <p className="mt-1.5 mb-1">The body of an async function, run in Node on the server, with:</p>
-      <dl className="m-0 flex flex-col gap-1">
+      <summary className="cursor-pointer text-xs font-medium text-[var(--node-fg)] select-none">What a script can use</summary>
+      <p className="mt-2 mb-3">The body of an async function, run in Node on the server, with:</p>
+      <dl className="m-0 flex flex-col gap-2">
         {items.map(([name, what]) => (
           <div key={name}>
             <dt className="font-mono text-[var(--node-fg)]">{name}</dt>
-            <dd className="m-0 ps-2">{what}</dd>
+            <dd className="m-0">{what}</dd>
           </div>
         ))}
       </dl>

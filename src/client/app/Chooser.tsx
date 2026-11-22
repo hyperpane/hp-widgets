@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { formatAgo, useHost } from '@hyperpane/sdk/client';
-import { Empty, NodeButton, NodeMessage, Toolbar, ToolbarSpacer, useMenu } from '@hyperpane/ui';
-import { FileUp, LayoutDashboard, Plus } from 'lucide-react';
+import { Empty, NodeButton, Spinner, Toolbar, ToolbarSpacer, useMenu } from '@hyperpane/ui';
+import { CircleAlert, FileUp, LayoutDashboard, Plus } from 'lucide-react';
 import type { Panel, PanelSummary } from '../../shared/index.ts';
 import { useImport } from './useImport.tsx';
 
@@ -58,12 +58,15 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
       },
     ]);
 
-  if (error) return <NodeMessage error>{error}</NodeMessage>;
+  if (error)
+    return (
+      <Empty bordered={false} className="h-full" icon={<CircleAlert className="text-[var(--ansi-1)]" />} title="Couldn’t list the panels" description={error} />
+    );
 
   return (
     <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
       <Toolbar>
-        <span className="truncate px-1 font-medium">Panels</span>
+        <span className="truncate px-1.5 font-medium">Panels</span>
         <ToolbarSpacer />
         <NodeButton variant="ghost" onClick={importer.open}>
           <FileUp /> Import .hpw
@@ -74,7 +77,10 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
       </Toolbar>
       {importer.element}
       {!panels ? (
-        <NodeMessage>Looking for panels</NodeMessage>
+        <div className="flex flex-1 items-center justify-center gap-2 text-[var(--node-muted)]">
+          <Spinner size="xs" />
+          Looking for panels
+        </div>
       ) : panels.length === 0 ? (
         <div className="flex min-h-0 flex-1 items-center justify-center p-4">
           <Empty
@@ -95,18 +101,18 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
           />
         </div>
       ) : (
-        <ul className="m-0 min-h-0 flex-1 list-none overflow-y-auto p-1.5">
+        <ul className="m-0 min-h-0 flex-1 list-none overflow-y-auto p-1">
           {panels.map((p) => (
             <li key={p.id}>
               <button
                 type="button"
-                className="rounded-chip flex h-9 w-full items-center gap-2.5 px-2 text-left hover:bg-[var(--node-hover)] touch:h-11"
+                className="rounded-control flex h-8 w-full items-center gap-2 px-2 text-left transition-colors duration-75 hover:bg-[var(--node-hover)] touch:h-11"
                 onClick={() => onOpen(p.id)}
                 onContextMenu={(e) => rowMenu(e, p)}
               >
-                <LayoutDashboard className="size-4 flex-none text-[var(--node-muted)]" />
+                <LayoutDashboard className="size-3.5 flex-none text-[var(--node-muted)]" />
                 <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
-                <span className="flex-none text-[var(--node-muted)] tabular-nums">
+                <span className="text-2xs flex-none text-[var(--node-muted)] tabular-nums">
                   {p.widgets} widget{p.widgets === 1 ? '' : 's'} · {formatAgo(p.updated)}
                 </span>
               </button>

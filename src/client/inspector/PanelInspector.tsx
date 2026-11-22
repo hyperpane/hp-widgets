@@ -48,26 +48,27 @@ export function PanelInspector({ panel, edit, onSelect }: { panel: Panel; edit: 
           onChange={(runOnInput) => edit((p) => ({ ...p, runOnInput }), 'panel.runOnInput')}
         />
       </Section>
-      <Section title={`Widgets (${panel.widgets.length})`}>
+      <Section
+        title="Widgets"
+        aside={panel.widgets.length > 0 && <span className="pe-1 text-2xs text-[var(--node-muted)] tabular-nums">{panel.widgets.length}</span>}
+      >
         {panel.widgets.length === 0 ? (
-          <p className="rounded-control m-0 border border-dashed border-[var(--node-border)] px-3 py-4 text-center text-2xs leading-4 text-[var(--node-muted)]">
+          <p className="rounded-control m-0 bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-3 py-4 text-center text-2xs leading-4 text-[var(--node-muted)]">
             Nothing here yet. Click a widget in the palette to add it, or drag it onto the canvas.
           </p>
         ) : (
-          <ul className="m-0 flex list-none flex-col p-0">
+          <ul className="-mx-1.5 m-0 flex list-none flex-col p-0">
             {panel.widgets.map((w) => {
               const Icon = REGISTRY[w.type].icon;
               return (
                 <li key={w.id}>
                   <button
                     type="button"
-                    className="rounded-control group/row flex h-7 w-full touch:h-10 items-center gap-2 px-1 text-left text-xs hover:bg-[var(--node-hover)]"
+                    className="rounded-control group/row flex h-7 w-full touch:h-10 items-center gap-2 px-1.5 text-left text-xs transition-colors duration-75 hover:bg-[var(--node-hover)]"
                     onClick={() => onSelect(w.id)}
                   >
-                    <span className="rounded-chip flex size-5 flex-none items-center justify-center border border-[var(--node-border)] bg-[var(--node-header)] text-[var(--node-muted)] group-hover/row:text-[var(--node-fg)]">
-                      <Icon className="size-3" />
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">{w.id}</span>
+                    <Icon className="size-3.5 flex-none text-[var(--node-muted)] group-hover/row:text-[var(--node-fg)]" />
+                    <span className="min-w-0 flex-1 truncate font-mono">{w.id}</span>
                     <span className="flex-none text-2xs text-[var(--node-muted)]">{REGISTRY[w.type].title}</span>
                   </button>
                 </li>
