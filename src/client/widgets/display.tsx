@@ -3,7 +3,7 @@
 // the widgets in it, which takes them along when it's hidden or disabled).
 
 import { useLayoutEffect, useRef } from 'react';
-import { Gauge, SeparatorHorizontal, SquareDashed, SquareTerminal } from 'lucide-react';
+import { Gauge, SeparatorHorizontal, SquareDashed, SquareTerminal } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import type { WidgetEntry, WidgetView } from './types.ts';
 
@@ -22,9 +22,9 @@ export const progress: WidgetEntry = {
     const done = n >= 100;
     return (
       <div className="flex h-full w-full min-w-0 flex-col justify-center gap-1.5">
-        <div className="flex items-center justify-between gap-2 text-2xs leading-4 text-[var(--node-muted)]">
-          <span className="truncate font-medium">{props.label}</span>
-          <span className={`flex-none tabular-nums ${done ? 'text-[var(--ansi-2)]' : ''}`}>{Math.round(n)}%</span>
+        <div className="flex items-center justify-between gap-2 text-xs leading-4 text-[var(--node-muted)]">
+          <span className="truncate">{props.label}</span>
+          <span className={`flex-none font-medium tabular-nums ${done ? 'text-[var(--green)]' : 'text-[var(--node-fg)]'}`}>{Math.round(n)}%</span>
         </div>
         <div
           role="progressbar"
@@ -32,11 +32,11 @@ export const progress: WidgetEntry = {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(n)}
-          className="relative h-1.5 w-full overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--node-fg)_10%,transparent)]"
+          className="relative h-1.5 w-full overflow-hidden rounded-full bg-[var(--fill)]"
         >
           <div
             className="absolute inset-y-0 start-0 rounded-full transition-[width,background-color] duration-300 ease-out motion-reduce:transition-none"
-            style={{ width: `${n}%`, background: done ? 'var(--ansi-2)' : 'var(--node-accent)' }}
+            style={{ width: `${n}%`, background: done ? 'var(--green)' : 'var(--node-accent)' }}
           />
         </div>
       </div>
@@ -55,9 +55,11 @@ function LogWidget({ props, value, dev }: WidgetView) {
     if (el && stuck.current) el.scrollTop = el.scrollHeight;
   }, [text]);
   return (
-    <div className="rounded-surface flex h-full w-full min-w-0 flex-col overflow-hidden border border-[var(--node-border)] bg-[color-mix(in_srgb,var(--node-header)_70%,black)]">
-      <div className="flex h-7 flex-none items-center gap-1.5 border-b border-[var(--node-border)] px-2.5 text-2xs leading-4 text-[var(--node-muted)]">
-        <SquareTerminal className="size-3 flex-none" />
+    // A sunken well (a step darker than the window in dark themes, a touch
+    // greyer in light ones), not a black box pasted on.
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[10px] bg-[var(--surface-sunken)] ring-1 ring-[var(--hairline)] ring-inset">
+      <div className="flex h-8 flex-none items-center gap-2 px-3 text-xs leading-4 text-[var(--node-muted)]">
+        <SquareTerminal variant="outline" className="size-3.5 flex-none" />
         <span className="min-w-0 flex-1 truncate font-medium">{props.label || 'Output'}</span>
         {lines > 0 && (
           <span className="flex-none tabular-nums">
@@ -73,12 +75,12 @@ function LogWidget({ props, value, dev }: WidgetView) {
             const el = e.currentTarget;
             stuck.current = el.scrollHeight - el.scrollTop - el.clientHeight < 16;
           }}
-          className="m-0 min-h-0 flex-1 overflow-auto px-2.5 py-2 font-mono text-[11px] leading-[1.5] break-all whitespace-pre-wrap text-[var(--node-fg)] outline-none select-text"
+          className="m-0 min-h-0 flex-1 overflow-auto border-t border-[var(--hairline)] px-3 py-2 font-mono text-[11px] leading-[1.6] break-all whitespace-pre-wrap text-[var(--node-fg)] outline-none select-text"
         >
           {text}
         </pre>
       ) : (
-        <div className="flex min-h-0 flex-1 items-center justify-center px-3 text-center text-2xs text-[var(--node-muted)]">
+        <div className="flex min-h-0 flex-1 items-center justify-center border-t border-[var(--hairline)] px-3 text-center text-xs text-[var(--node-muted)]">
           {dev ? 'Output shows here: commands’ lines and ui.log' : 'No output yet'}
         </div>
       )}
@@ -107,7 +109,7 @@ export const divider: WidgetEntry = {
     const down = widget.h > widget.w;
     return (
       <div className={down ? 'flex h-full w-full justify-center' : 'flex h-full w-full flex-col justify-center'}>
-        <div className={down ? 'h-full w-px bg-[var(--node-border)]' : 'h-px w-full bg-[var(--node-border)]'} />
+        <div className={down ? 'h-full w-px bg-[var(--hairline-strong)]' : 'h-px w-full bg-[var(--hairline-strong)]'} />
       </div>
     );
   },
@@ -122,10 +124,10 @@ export const group: WidgetEntry = {
   fields: [{ kind: 'text', prop: 'label', label: 'Title' }],
   render: ({ props, disabled }) => (
     <div
-      className={`rounded-surface relative h-full w-full border border-[var(--node-border)] bg-[color-mix(in_srgb,var(--node-fg)_2.5%,transparent)] ${disabled ? 'opacity-60' : ''}`}
+      className={`relative h-full w-full rounded-surface bg-[var(--surface-raised)] shadow-[var(--highlight-top),var(--shadow-raised)] ring-1 ring-[var(--hairline)] ring-inset ${disabled ? 'opacity-60' : ''}`}
     >
       {props.label ? (
-        <span className="absolute top-1.5 left-3 max-w-[calc(100%-1.5rem)] truncate text-[10px] leading-4 font-semibold tracking-wider text-[var(--node-muted)] uppercase">
+        <span className="absolute top-2.5 left-4 max-w-[calc(100%-2rem)] truncate text-[11px] leading-4 font-medium tracking-[0.06em] text-[var(--node-muted)] uppercase">
           {props.label}
         </span>
       ) : null}

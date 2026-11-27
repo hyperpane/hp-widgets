@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import { Input, Textarea } from '@hyperpane/ui';
-import { Hash, TextAlignStart, TextCursorInput } from 'lucide-react';
+import { Hash, TextAlignStart, TextCursorInput } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import { Labeled, useCommit } from './Labeled.tsx';
 import type { WidgetEntry, WidgetView } from './types.ts';

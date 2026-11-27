@@ -8,8 +8,8 @@
 
 import { type KeyboardEvent, useRef, useState } from 'react';
 import { mod } from '@hyperpane/sdk/client';
-import { DialogHeader, DialogTitle, NodeButton, Sheet, SheetContent, Toolbar, useCompact } from '@hyperpane/ui';
-import { Plus, SlidersHorizontal } from 'lucide-react';
+import { Button, DialogHeader, DialogTitle, HeaderBar, Sheet, SheetContent, useCompact } from '@hyperpane/ui';
+import { Plus, SlidersHorizontal } from '@hyperpane/icons';
 import type { WidgetType } from '../../shared/index.ts';
 import { DevCanvas, FIT_PAD } from '../canvas/DevCanvas.tsx';
 import { useFit } from '../canvas/useFit.ts';
@@ -134,28 +134,28 @@ export function DevMode({ state }: { state: PanelState }) {
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: the editor's keys, as below.
       <div ref={root} tabIndex={-1} className="flex min-h-0 flex-1 flex-col outline-none" onKeyDown={keys}>
-        <Toolbar className="gap-2">
-          <NodeButton onClick={() => setSheet('palette')}>
-            <Plus /> Add
-          </NodeButton>
-          <NodeButton className="ms-auto min-w-0 shrink" onClick={() => setSheet('inspector')}>
-            <SlidersHorizontal />
+        <HeaderBar className="gap-2 px-2.5">
+          <Button variant="secondary" size="sm" onClick={() => setSheet('palette')}>
+            <Plus variant="outline" /> Add
+          </Button>
+          <Button variant="secondary" size="sm" className="ms-auto min-w-0 shrink" onClick={() => setSheet('inspector')}>
+            <SlidersHorizontal variant="outline" />
             <span className="truncate">{selected ?? 'Panel'}</span>
-          </NodeButton>
-        </Toolbar>
+          </Button>
+        </HeaderBar>
         {canvas}
         <Sheet open={sheet === 'palette'} onOpenChange={open('palette')}>
           <SheetContent side="start" showClose>
-            <DialogHeader className="p-3.5 pe-12">
-              <DialogTitle className="text-sm">Add a widget</DialogTitle>
+            <DialogHeader className="flex h-11 justify-center px-4 pe-12">
+              <DialogTitle className="text-[13px] font-medium">Add a widget</DialogTitle>
             </DialogHeader>
             <Palette onAdd={(t) => add(t)} onDrop={drop} scale={scale} className="w-full flex-1 overflow-visible border-r-0" />
           </SheetContent>
         </Sheet>
         <Sheet open={sheet === 'inspector'} onOpenChange={open('inspector')}>
           <SheetContent side="end" showClose>
-            <DialogHeader className="p-3.5 pe-12">
-              <DialogTitle className="text-sm">Inspector</DialogTitle>
+            <DialogHeader className="flex h-11 justify-center px-4 pe-12">
+              <DialogTitle className="text-[13px] font-medium">Inspector</DialogTitle>
             </DialogHeader>
             {inspector(true)}
           </SheetContent>

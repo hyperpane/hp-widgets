@@ -11,7 +11,7 @@ export function Labeled({ label, children }: { label?: string; children(id: stri
   return (
     <div className="flex h-full w-full min-w-0 flex-col gap-1">
       {label ? (
-        <Label htmlFor={id} className="truncate text-2xs leading-4 font-medium text-[var(--node-muted)]">
+        <Label htmlFor={id} className="truncate text-xs leading-4 font-normal text-[var(--node-muted)]">
           {label}
         </Label>
       ) : null}

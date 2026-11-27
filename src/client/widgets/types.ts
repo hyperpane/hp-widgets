@@ -4,7 +4,7 @@
 // it. A type's entry lives in the file of its kind (text.tsx, fields.tsx…);
 // registry.ts puts them together.
 
-import type { LucideIcon } from 'lucide-react';
+import type { Icon as IconComponent } from '@hyperpane/icons';
 import type { ReactNode } from 'react';
 import type { TypeSpec, Value, Widget, WidgetProps, WidgetType } from '../../shared/index.ts';
 import type { Overrides } from '../runtime/state.ts';
@@ -46,7 +46,7 @@ export interface WidgetEntry {
   title: string;
   /** A line in the palette's tooltip. */
   hint: string;
-  icon: LucideIcon;
+  icon: IconComponent;
   defaults: TypeSpec;
   render(view: WidgetView): ReactNode;
   fields: FieldSpec[];

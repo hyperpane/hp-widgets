@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { formatAgo, useHost } from '@hyperpane/sdk/client';
-import { Empty, NodeButton, Spinner, Toolbar, ToolbarSpacer, useMenu } from '@hyperpane/ui';
-import { CircleAlert, FileUp, LayoutDashboard, Plus } from 'lucide-react';
+import { Button, Empty, HeaderBar, IconTile, List, ListRow, Spinner, ToolButton, useMenu } from '@hyperpane/ui';
+import { CircleAlert, Ellipsis, FileUp, LayoutDashboard, Plus } from '@hyperpane/icons';
 import type { Panel, PanelSummary } from '../../shared/index.ts';
 import { useImport } from './useImport.tsx';
 
@@ -60,65 +60,90 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
 
   if (error)
     return (
-      <Empty bordered={false} className="h-full" icon={<CircleAlert className="text-[var(--ansi-1)]" />} title="Couldn’t list the panels" description={error} />
+      <Empty
+        bordered={false}
+        size="compact"
+        className="h-full"
+        icon={<CircleAlert className="text-[var(--rose)]" />}
+        title="Couldn’t list the panels"
+        description={error}
+      />
     );
 
+  const empty = panels?.length === 0;
   return (
-    <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
-      <Toolbar>
-        <span className="truncate px-1.5 font-medium">Panels</span>
-        <ToolbarSpacer />
-        <NodeButton variant="ghost" onClick={importer.open}>
-          <FileUp /> Import .hpw
-        </NodeButton>
-        <NodeButton variant="primary" onClick={() => void create()}>
-          <Plus /> New panel
-        </NodeButton>
-      </Toolbar>
+    <div className="flex h-full flex-col text-[13px] leading-5 text-[var(--node-fg)]">
+      <HeaderBar
+        className="px-4"
+        icon={<LayoutDashboard />}
+        title="Panels"
+        meta={panels && panels.length > 0 ? panels.length : undefined}
+        actions={
+          // While there are none, the empty state below has these: one place for them.
+          !empty && (
+            <>
+              <Button variant="ghost" size="sm" onClick={importer.open}>
+                <FileUp variant="outline" /> Import .hpw
+              </Button>
+              <Button variant="default" tint="var(--node-accent)" size="sm" onClick={() => void create()}>
+                <Plus variant="outline" /> New panel
+              </Button>
+            </>
+          )
+        }
+      />
       {importer.element}
       {!panels ? (
         <div className="flex flex-1 items-center justify-center gap-2 text-[var(--node-muted)]">
           <Spinner size="xs" />
           Looking for panels
         </div>
-      ) : panels.length === 0 ? (
-        <div className="flex min-h-0 flex-1 items-center justify-center p-4">
+      ) : empty ? (
+        <div className="flex min-h-0 flex-1 items-center justify-center p-6">
           <Empty
             bordered={false}
             icon={<LayoutDashboard />}
             title="No panels in this project yet"
             description="A panel is a tool of your own: buttons, fields and logs laid out on a grid, with scripts that run commands on the server."
             action={
-              <div className="flex gap-2">
-                <NodeButton variant="primary" onClick={() => void create()}>
-                  <Plus /> New panel
-                </NodeButton>
-                <NodeButton onClick={importer.open}>
-                  <FileUp /> Import .hpw
-                </NodeButton>
-              </div>
+              <>
+                <Button variant="default" tint="var(--node-accent)" size="sm" onClick={() => void create()}>
+                  <Plus variant="outline" /> New panel
+                </Button>
+                <Button variant="secondary" size="sm" onClick={importer.open}>
+                  <FileUp variant="outline" /> Import .hpw
+                </Button>
+              </>
             }
           />
         </div>
       ) : (
-        <ul className="m-0 min-h-0 flex-1 list-none overflow-y-auto p-1">
+        <List role="list" className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
           {panels.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                className="rounded-control flex h-8 w-full items-center gap-2 px-2 text-left transition-colors duration-75 hover:bg-[var(--node-hover)] touch:h-11"
-                onClick={() => onOpen(p.id)}
-                onContextMenu={(e) => rowMenu(e, p)}
-              >
-                <LayoutDashboard className="size-3.5 flex-none text-[var(--node-muted)]" />
-                <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
-                <span className="text-2xs flex-none text-[var(--node-muted)] tabular-nums">
-                  {p.widgets} widget{p.widgets === 1 ? '' : 's'} · {formatAgo(p.updated)}
-                </span>
-              </button>
-            </li>
+            <ListRow
+              key={p.id}
+              size="tall"
+              role="listitem"
+              tabIndex={0}
+              className="cursor-default"
+              tile={<IconTile size="sm" icon={<LayoutDashboard />} />}
+              title={p.name}
+              description={`${p.widgets} widget${p.widgets === 1 ? '' : 's'}`}
+              meta={formatAgo(p.updated)}
+              actions={<ToolButton label={`More for ${p.name}`} icon={Ellipsis} iconVariant="outline" onClick={(e) => rowMenu(e, p)} />}
+              onClick={(e) => {
+                if (!(e.target as HTMLElement).closest('[data-slot="list-row-actions"]')) onOpen(p.id);
+              }}
+              onKeyDown={(e) => {
+                if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                  e.preventDefault();
+                  onOpen(p.id);
+                }
+              }}
+              onContextMenu={(e) => rowMenu(e, p)}
+            />
           ))}
-        </ul>
+        </List>
       )}
       {menu.element}
     </div>

@@ -2,8 +2,8 @@
 // a Radio group (one of a few, all in view), and a Slider. A choice made
 // runs the change script at once; a slider when it's let go.
 
-import { Checkbox, Select, Switch } from '@hyperpane/ui';
-import { ChevronsUpDown, CircleDot, SlidersHorizontal, SquareCheck, ToggleRight } from 'lucide-react';
+import { Checkbox, Radio, RadioGroup, Select, Switch } from '@hyperpane/ui';
+import { ChevronsUpDown, CircleDot, SlidersHorizontal, SquareCheck, ToggleRight } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import { Labeled, useCommit } from './Labeled.tsx';
 import type { WidgetEntry, WidgetView } from './types.ts';
@@ -25,7 +25,7 @@ export const checkbox: WidgetEntry = {
         checked={value === true}
         disabled={disabled}
         tabIndex={dev ? -1 : undefined}
-        className="text-xs"
+        className="text-[13px]"
         onCheckedChange={(on) => change(on, true)}
       />
     </div>
@@ -49,7 +49,7 @@ export const toggle: WidgetEntry = {
         checked={value === true}
         disabled={disabled}
         tabIndex={dev ? -1 : undefined}
-        className="text-xs"
+        className="text-[13px]"
         onCheckedChange={(on) => change(on, true)}
       />
     </div>
@@ -85,25 +85,23 @@ export const select: WidgetEntry = {
   ),
 };
 
-function RadioWidget({ widget, props, value, disabled, dev, change }: WidgetView) {
+function RadioWidget({ widget, props, value, disabled, change }: WidgetView) {
   return (
-    <fieldset disabled={disabled} className="flex h-full w-full min-w-0 flex-col gap-1 overflow-hidden border-0 p-0 disabled:opacity-60">
-      {props.label ? <legend className="mb-1 truncate p-0 text-2xs leading-4 font-medium text-[var(--node-muted)]">{props.label}</legend> : null}
-      {(props.options ?? []).map((o) => (
-        <label key={o} className="flex min-w-0 cursor-pointer items-center gap-2 text-xs">
-          <input
-            type="radio"
-            name={`radio-${widget.id}`}
-            value={o}
-            checked={value === o}
-            tabIndex={dev ? -1 : undefined}
-            className="size-3.5 flex-none cursor-pointer accent-[var(--node-accent)]"
-            onChange={() => change(o, true)}
-          />
-          <span className="truncate">{o}</span>
-        </label>
-      ))}
-    </fieldset>
+    <div className="flex h-full w-full min-w-0 flex-col gap-1 overflow-hidden">
+      {props.label ? <span className="truncate text-xs leading-4 text-[var(--node-muted)]">{props.label}</span> : null}
+      <RadioGroup
+        name={`radio-${widget.id}`}
+        label={props.label || widget.id}
+        value={String(value ?? '')}
+        disabled={disabled}
+        onValueChange={(o) => change(o, true)}
+        className="min-w-0 gap-1"
+      >
+        {(props.options ?? []).map((o) => (
+          <Radio key={o} value={o} size="sm" label={o} className="min-w-0 gap-2 text-[13px] leading-5 touch:min-h-0" />
+        ))}
+      </RadioGroup>
+    </div>
   );
 }
 

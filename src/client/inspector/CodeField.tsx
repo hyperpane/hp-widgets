@@ -76,7 +76,7 @@ export function CodeField({
     <div
       ref={box}
       className={cn(
-        'rounded-control min-h-0 overflow-hidden border border-[var(--node-border)] focus-within:border-[var(--node-accent)] [&_.cm-editor]:h-full [&_.cm-editor]:outline-none',
+        'rounded-control min-h-0 overflow-hidden border border-[var(--hairline-strong)] focus-within:border-[var(--node-accent)] [&_.cm-editor]:h-full [&_.cm-editor]:outline-none',
         className,
       )}
     />

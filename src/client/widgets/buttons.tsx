@@ -2,13 +2,14 @@
 // it (a spinner) and takes no second click.
 
 import { Button } from '@hyperpane/ui';
-import { LoaderCircle, MousePointerClick } from 'lucide-react';
+import { MousePointerClick } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import type { WidgetEntry } from './types.ts';
 
-type Look = { variant: 'default' | 'secondary' | 'outline' | 'ghost'; color: 'neutral' | 'destructive' };
+type Look = { variant: 'default' | 'secondary' | 'outline' | 'ghost'; color: 'neutral' | 'destructive'; tint?: string };
 const LOOKS: Record<string, Look> = {
-  primary: { variant: 'default', color: 'neutral' },
+  // The window's accent, as the Git window's one primary per place.
+  primary: { variant: 'default', color: 'neutral', tint: 'var(--node-accent)' },
   secondary: { variant: 'secondary', color: 'neutral' },
   outline: { variant: 'outline', color: 'neutral' },
   ghost: { variant: 'ghost', color: 'neutral' },
@@ -32,14 +33,15 @@ export const button: WidgetEntry = {
       <Button
         variant={look.variant}
         color={look.color}
+        tint={look.tint}
         size="sm"
         className="h-full w-full min-w-0"
-        disabled={disabled || busy}
-        aria-busy={busy || undefined}
+        disabled={disabled}
+        // The kit's busy look: a spinner in its own colour, not pressable.
+        loading={busy}
         tabIndex={dev ? -1 : undefined}
         onClick={click}
       >
-        {busy && <LoaderCircle className="animate-spin" />}
         <span className="truncate">{props.label}</span>
       </Button>
     );

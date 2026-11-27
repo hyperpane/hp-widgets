@@ -3,15 +3,15 @@
 // which a script sets with ui.set('status', 'Deployed').
 
 import { Badge, cn } from '@hyperpane/ui';
-import { Tag, Type } from 'lucide-react';
+import { Tag, Type } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import type { WidgetEntry } from './types.ts';
 
 const TEXT_LOOKS: Record<string, string> = {
-  heading: 'text-base font-semibold',
-  title: 'text-sm font-medium',
-  body: 'text-xs',
-  muted: 'text-xs text-[var(--node-muted)]',
+  heading: 'text-title font-semibold tracking-title',
+  title: 'text-md font-semibold tracking-title',
+  body: 'text-[13px] leading-5',
+  muted: 'text-[13px] leading-5 text-[var(--node-muted)]',
   mono: 'font-mono text-xs',
 };
 

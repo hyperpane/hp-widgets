@@ -63,8 +63,8 @@ export function Frame({
       </div>
       {selected && (
         <>
-          <span className="rounded-chip pointer-events-none absolute -top-5 left-0 flex max-w-60 items-center gap-1 bg-[var(--node-accent)] px-1 text-2xs leading-4 font-medium whitespace-nowrap text-white">
-            <Icon className="size-3 flex-none" />
+          <span className="rounded-chip pointer-events-none absolute -top-6 left-0 flex h-5 max-w-60 items-center gap-1 bg-[var(--node-accent)] px-1.5 font-mono text-[11px] leading-4 font-medium whitespace-nowrap text-white shadow-[var(--shadow-raised)]">
+            <Icon variant="outline" className="size-3 flex-none" />
             <span className="truncate">{widget.id}</span>
             {dragging && (
               <span className="opacity-80 tabular-nums">
@@ -77,7 +77,7 @@ export function Frame({
               key={h}
               aria-hidden
               className={cn(
-                'absolute size-2 rounded-[2px] border border-[var(--node-accent)] bg-[var(--node-bg)]',
+                'absolute size-2 rounded-full border-[1.5px] border-[var(--node-accent)] bg-[var(--node-bg)] shadow-[var(--shadow-raised)]',
                 // A finger's room around it, the handle drawn as it is.
                 "touch:before:absolute touch:before:-inset-3 touch:before:content-['']",
                 HANDLE_PLACE[h],

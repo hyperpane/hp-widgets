@@ -2,8 +2,8 @@
 // conditions use), the props its type takes (the registry says which), its
 // box, when it shows and when it takes input, and its script.
 
-import { Copy, Trash } from 'lucide-react';
-import { Input, ToolButton } from '@hyperpane/ui';
+import { Copy, Trash } from '@hyperpane/icons';
+import { HeaderBar, IconTile, Input, ToolButton } from '@hyperpane/ui';
 import { conditionProblem, type Panel, TYPES, type Value, type Widget, type WidgetProps } from '../../shared/index.ts';
 import { renameIn, renameProblem } from '../lib/ids.ts';
 import { placed } from '../lib/layout.ts';
@@ -51,19 +51,20 @@ export function WidgetInspector({
 
   return (
     <>
-      <Section
+      <HeaderBar
+        className="sticky top-0 z-10 bg-[var(--node-bg)] px-4 pe-2.5"
+        icon={<IconTile size="xs" icon={<Icon />} />}
         title={entry.title}
-        aside={
-          <span className="flex items-center gap-0.5">
-            <ToolButton label="Duplicate (⌘D)" icon={Copy} onClick={onDuplicate} />
-            <ToolButton label="Delete (⌫)" icon={Trash} onClick={onDelete} />
-          </span>
+        meta={<span className="font-mono">{id}</span>}
+        actions={
+          <>
+            <ToolButton label="Duplicate (⌘D)" icon={Copy} iconVariant="outline" onClick={onDuplicate} />
+            <ToolButton label="Delete (⌫)" icon={Trash} iconVariant="outline" onClick={onDelete} />
+          </>
         }
-      >
-        <div className="-mt-1 flex items-start gap-2 text-2xs leading-4 text-[var(--node-muted)]">
-          <Icon className="size-3.5 flex-none" />
-          <span>{entry.hint}</span>
-        </div>
+      />
+      <Section title="Widget">
+        <p className="-mt-1 m-0 text-xs leading-[18px] text-[var(--node-muted)]">{entry.hint}</p>
         <CheckedField
           label="Id"
           mono

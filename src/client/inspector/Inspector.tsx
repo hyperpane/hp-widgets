@@ -26,7 +26,7 @@ export function Inspector({
 }) {
   const widget = selected ? panel.widgets.find((w) => w.id === selected) : undefined;
   return (
-    <aside aria-label="Inspector" className={cn('flex w-72 flex-none flex-col overflow-y-auto border-l border-[var(--node-border)]', className)}>
+    <aside aria-label="Inspector" className={cn('flex w-72 flex-none flex-col overflow-y-auto border-l border-[var(--hairline)]', className)}>
       {widget ? (
         <WidgetInspector
           // A widget of its own each: fields typed into don't carry over.

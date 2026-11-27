@@ -1,5 +1,5 @@
 // The client part: the Widgets window, one frame per window. React, the
-// SDK, the UI kit, CodeMirror and Lucide come from the app; Tailwind
+// SDK, the UI kit, CodeMirror and the icons come from the app; Tailwind
 // classes are compiled for this plugin from what this folder uses.
 //
 //   app/        the window: the chooser, a panel's toolbar, View and Dev mode

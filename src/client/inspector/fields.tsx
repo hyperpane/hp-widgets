@@ -11,26 +11,26 @@ export function Row({ label, hint, error, children }: { label: string; hint?: Re
   const id = useId();
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <Label htmlFor={id} className="text-2xs leading-4 font-medium text-[var(--node-muted)]">
+      <Label htmlFor={id} className="text-xs leading-4 font-normal text-[var(--node-muted)]">
         {label}
       </Label>
       {children(id)}
       {error ? (
-        <p className="m-0 text-2xs leading-4 text-[var(--ansi-1)]">{error}</p>
+        <p className="m-0 text-xs leading-4 text-[var(--rose)]">{error}</p>
       ) : hint ? (
-        <p className="m-0 text-2xs leading-4 text-[var(--node-muted)]">{hint}</p>
+        <p className="m-0 text-xs leading-4 text-[var(--node-muted)]">{hint}</p>
       ) : null}
     </div>
   );
 }
 
-/** A section of the inspector, under a quiet heading; one line between
- * sections. */
+/** A section of the inspector under a small label (11px, uppercase, as
+ * Git's lists have them); spacing between sections, no lines. */
 export function Section({ title, children, aside }: { title: string; children: ReactNode; aside?: ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 border-b border-[var(--node-border)] px-3 pt-2 pb-4 last:border-b-0">
+    <section className="flex flex-col gap-3 px-4 pt-3 pb-4">
       <div className="-me-1 flex h-7 items-center justify-between gap-2">
-        <h3 className="m-0 text-xs font-medium text-[var(--node-fg)]">{title}</h3>
+        <h3 className="m-0 text-[11px] leading-4 font-medium tracking-[0.06em] text-[var(--node-muted)] uppercase">{title}</h3>
         {aside}
       </div>
       {children}
@@ -63,7 +63,7 @@ export function TextField({
             id={id}
             variant="secondary"
             size="sm"
-            className={cn('min-h-14 text-xs', mono && 'font-mono')}
+            className={cn('min-h-14 text-[13px]', mono && 'font-mono text-xs')}
             value={value}
             placeholder={placeholder}
             spellCheck={false}
@@ -74,7 +74,7 @@ export function TextField({
             id={id}
             variant="secondary"
             size="sm"
-            className={cn('text-xs', mono && 'font-mono')}
+            className={cn('text-[13px]', mono && 'font-mono text-xs')}
             value={value}
             placeholder={placeholder}
             spellCheck={false}
@@ -117,7 +117,7 @@ export function CheckedField({
           id={id}
           variant="secondary"
           size="sm"
-          className={cn('text-xs', mono && 'font-mono')}
+          className={cn('text-[13px]', mono && 'font-mono text-xs')}
           value={typed}
           error={!!problem}
           spellCheck={false}
@@ -159,7 +159,7 @@ export function NumberField({
           variant="secondary"
           size="sm"
           type="number"
-          className="text-xs tabular-nums"
+          className="text-[13px] tabular-nums"
           value={typed}
           min={min}
           max={max}
@@ -196,8 +196,8 @@ export function ChoiceField({
 
 export function SwitchField({ label, value, onChange }: { label: string; value: boolean; onChange(v: boolean): void }) {
   return (
-    <div className="flex items-center justify-between gap-2">
-      <span className="text-xs">{label}</span>
+    <div className="flex min-h-7 items-center justify-between gap-3">
+      <span className="text-[13px]">{label}</span>
       <Switch checked={value} label={label} hideLabel onCheckedChange={onChange} />
     </div>
   );
@@ -218,7 +218,7 @@ export function LinesField({ label, value, onChange }: { label: string; value: s
           id={id}
           variant="secondary"
           size="sm"
-          className="min-h-16 text-xs"
+          className="min-h-16 text-[13px]"
           value={typed}
           spellCheck={false}
           onChange={(e) => {

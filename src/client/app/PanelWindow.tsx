@@ -5,8 +5,8 @@
 
 import { useEffect, useState } from 'react';
 import { useHost } from '@hyperpane/sdk/client';
-import { Empty, NodeButton, Spinner, useMenu } from '@hyperpane/ui';
-import { CircleAlert } from 'lucide-react';
+import { Button, Empty, Spinner, useMenu } from '@hyperpane/ui';
+import { CircleAlert } from '@hyperpane/icons';
 import { hpwFileName, type Panel } from '../../shared/index.ts';
 import { ViewCanvas } from '../canvas/ViewCanvas.tsx';
 import { useRuntime } from '../runtime/useRuntime.ts';
@@ -23,17 +23,22 @@ export function PanelWindow({ id, project, window, onOpen }: { id: string; proje
     return (
       <Empty
         bordered={false}
+        size="compact"
         className="h-full"
-        icon={<CircleAlert className="text-[var(--ansi-1)]" />}
+        icon={<CircleAlert className="text-[var(--rose)]" />}
         title="Couldn’t open the panel"
         description={state.error}
-        action={<NodeButton onClick={() => onOpen(null)}>Choose another panel</NodeButton>}
+        action={
+          <Button variant="secondary" size="sm" onClick={() => onOpen(null)}>
+            Choose another panel
+          </Button>
+        }
       />
     );
   }
   if (!state.panel)
     return (
-      <div className="flex h-full items-center justify-center gap-2 text-xs text-[var(--node-muted)]">
+      <div className="flex h-full items-center justify-center gap-2 text-[13px] text-[var(--node-muted)]">
         <Spinner size="xs" />
         Opening the panel
       </div>
@@ -128,7 +133,7 @@ function Loaded({
     ]);
 
   return (
-    <div className="flex h-full flex-col text-xs text-[var(--node-fg)]">
+    <div className="flex h-full flex-col text-[13px] leading-5 text-[var(--node-fg)]">
       <PanelToolbar
         name={panel.name}
         mode={mode}

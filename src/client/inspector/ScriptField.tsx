@@ -7,8 +7,8 @@
 // inspector's sheet in a narrow window (one too), which nothing else is.
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, Code2 } from 'lucide-react';
-import { NodeButton } from '@hyperpane/ui';
+import { ChevronLeft, Code2 } from '@hyperpane/icons';
+import { Button, HeaderBar } from '@hyperpane/ui';
 import { CodeField } from './CodeField.tsx';
 
 /** How many of its lines the inspector shows. */
@@ -35,18 +35,18 @@ export function ScriptField({
   return (
     <div className="flex flex-col gap-2">
       {value.trim() ? (
-        <pre className="rounded-control m-0 overflow-hidden bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-2.5 py-2 font-mono text-2xs leading-4 whitespace-pre text-[var(--node-fg)]">
+        <pre className="rounded-control m-0 overflow-hidden bg-[var(--fill)] px-3 py-2.5 font-mono text-[11px] leading-4 whitespace-pre text-[var(--node-fg)] ring-1 ring-[var(--hairline)] ring-inset">
           {lines.slice(0, PREVIEW_LINES).join('\n')}
           {more > 0 && <span className="block pt-1 text-[var(--node-muted)]">{more === 1 ? '1 more line' : `${more} more lines`}</span>}
         </pre>
       ) : (
-        <p className="rounded-control m-0 bg-[color-mix(in_srgb,var(--node-fg)_4%,transparent)] px-3 py-3 text-center text-2xs leading-4 text-[var(--node-muted)]">
+        <p className="rounded-control m-0 border border-dashed border-[var(--hairline-strong)] px-3 py-3 text-center text-xs text-[var(--node-muted)]">
           No code yet: nothing runs.
         </p>
       )}
-      <NodeButton className="self-start" onClick={() => setOpen(true)}>
-        <Code2 /> Edit code
-      </NodeButton>
+      <Button variant="secondary" size="sm" className="self-start" onClick={() => setOpen(true)}>
+        <Code2 variant="outline" /> Edit code
+      </Button>
       {open && <CodePage title={title} label={label} value={value} placeholder={placeholder} onChange={onChange} onClose={() => setOpen(false)} />}
     </div>
   );
@@ -91,21 +91,21 @@ function CodePage({
       }}
       className="fixed inset-0 m-0 flex h-dvh max-h-none w-dvw max-w-none flex-col border-0 bg-[var(--node-bg,var(--background))] p-0 text-[var(--node-fg,var(--foreground))] backdrop:bg-transparent"
     >
-      <header className="flex h-11 flex-none items-center gap-2 border-b border-[var(--node-border)] px-2.5 touch:h-12">
-        <NodeButton variant="ghost" className="ps-1.5" onClick={onClose} aria-label="Back to the panel">
-          <ChevronLeft /> Panel
-        </NodeButton>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-semibold">{title}</div>
-          <div className="truncate text-2xs text-[var(--node-muted)] max-sm:hidden">JavaScript, run on the server. Saved as you type.</div>
+      <HeaderBar className="gap-2 px-2.5">
+        <Button variant="ghost" size="sm" className="ps-1.5" onClick={onClose} aria-label="Back to the panel">
+          <ChevronLeft variant="outline" /> Panel
+        </Button>
+        <div className="flex min-w-0 flex-1 items-baseline gap-2">
+          <div className="truncate text-[13px] font-medium">{title}</div>
+          <div className="truncate text-xs text-[var(--node-muted)] max-sm:hidden">JavaScript, run on the server. Saved as you type.</div>
         </div>
-        <NodeButton variant="primary" onClick={onClose}>
+        <Button variant="default" tint="var(--node-accent)" size="sm" onClick={onClose}>
           Done
-        </NodeButton>
-      </header>
+        </Button>
+      </HeaderBar>
       <div className="flex min-h-0 flex-1 max-md:flex-col">
         <CodeField label={label} value={value} placeholder={placeholder} onChange={onChange} fontSize={13} className="min-h-0 flex-1 rounded-none border-0" />
-        <aside className="w-80 flex-none overflow-y-auto border-l border-[var(--node-border)] p-4 max-md:max-h-[40%] max-md:w-auto max-md:border-t max-md:border-l-0">
+        <aside className="w-80 flex-none overflow-y-auto border-l border-[var(--hairline)] bg-[var(--surface-sunken)] p-4 max-md:max-h-[40%] max-md:w-auto max-md:border-t max-md:border-l-0">
           <ScriptHelp open />
         </aside>
       </div>
@@ -133,13 +133,13 @@ export function ScriptHelp({ open }: { open?: boolean }) {
     ['console.log, fetch, setTimeout', 'as in Node; console goes to the first Log'],
   ];
   return (
-    <details open={open} className="text-2xs leading-4 text-[var(--node-muted)]">
-      <summary className="cursor-pointer text-xs font-medium text-[var(--node-fg)] select-none">What a script can use</summary>
-      <p className="mt-2 mb-3">The body of an async function, run in Node on the server, with:</p>
-      <dl className="m-0 flex flex-col gap-2">
+    <details open={open} className="text-xs leading-[18px] text-[var(--node-muted)]">
+      <summary className="cursor-pointer text-[11px] leading-4 font-medium tracking-[0.06em] text-[var(--node-muted)] uppercase select-none">What a script can use</summary>
+      <p className="mt-2 mb-4">The body of an async function, run in Node on the server, with:</p>
+      <dl className="m-0 flex flex-col gap-3">
         {items.map(([name, what]) => (
           <div key={name}>
-            <dt className="font-mono text-[var(--node-fg)]">{name}</dt>
+            <dt className="font-mono text-[11px] text-[var(--node-fg)]">{name}</dt>
             <dd className="m-0">{what}</dd>
           </div>
         ))}

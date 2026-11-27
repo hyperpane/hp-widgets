@@ -15,7 +15,7 @@ import { drawOrder } from './WidgetBody.tsx';
 /** The grid: a dot every 16px (two snaps), on the panel's own color. */
 const GRID_STYLE = {
   backgroundColor: 'var(--node-bg)',
-  backgroundImage: 'radial-gradient(circle, color-mix(in srgb, var(--node-fg) 16%, transparent) 1px, transparent 1.2px)',
+  backgroundImage: 'radial-gradient(circle, color-mix(in srgb, var(--node-fg) 13%, transparent) 1px, transparent 1.2px)',
   backgroundSize: '16px 16px',
   backgroundPosition: '-8px -8px',
 };
@@ -88,7 +88,7 @@ export function DevCanvas({
           <div
             ref={surface}
             data-surface
-            className="rounded-surface relative origin-top-left ring-1 ring-[var(--node-border)]"
+            className="rounded-surface relative origin-top-left shadow-[var(--shadow-card)] ring-1 ring-[var(--hairline-strong)]"
             style={{ width: panel.width, height: panel.height, transform: scale === 1 ? undefined : `scale(${scale})`, ...GRID_STYLE }}
             onPointerDown={(e) => {
               if (e.target === e.currentTarget && e.button === 0) onSelect(null);
@@ -110,7 +110,7 @@ export function DevCanvas({
             {children}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-2xs leading-4 text-[var(--node-muted)] tabular-nums">
+        <div className="flex h-5 items-center gap-2 text-xs leading-4 text-[var(--node-muted)] tabular-nums">
           <span>
             {panel.width} × {panel.height}
           </span>
