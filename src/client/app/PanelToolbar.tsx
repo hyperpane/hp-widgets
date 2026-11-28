@@ -43,7 +43,7 @@ export function PanelToolbar({
   onMenu(e: React.MouseEvent): void;
 }) {
   return (
-    <HeaderBar className="gap-2 px-2.5">
+    <HeaderBar className="gap-2 px-2">
       <SegmentedControl
         size="sm"
         label="Mode"

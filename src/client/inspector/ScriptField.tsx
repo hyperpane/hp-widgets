@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, Code2 } from '@hyperpane/icons';
 import { Button, HeaderBar } from '@hyperpane/ui';
+import { useBackPage } from '../app/back.ts';
 import { CodeField } from './CodeField.tsx';
 
 /** How many of its lines the inspector shows. */
@@ -35,12 +36,12 @@ export function ScriptField({
   return (
     <div className="flex flex-col gap-2">
       {value.trim() ? (
-        <pre className="rounded-control m-0 overflow-hidden bg-[var(--fill)] px-3 py-2.5 font-mono text-[11px] leading-4 whitespace-pre text-[var(--node-fg)] ring-1 ring-[var(--hairline)] ring-inset">
+        <pre className="rounded-control m-0 overflow-hidden bg-[var(--fill)] px-3 py-2.5 font-mono text-[11px] leading-4 whitespace-pre text-[var(--node-fg)]">
           {lines.slice(0, PREVIEW_LINES).join('\n')}
           {more > 0 && <span className="block pt-1 text-[var(--node-muted)]">{more === 1 ? '1 more line' : `${more} more lines`}</span>}
         </pre>
       ) : (
-        <p className="rounded-control m-0 border border-dashed border-[var(--hairline-strong)] px-3 py-3 text-center text-xs text-[var(--node-muted)]">
+        <p className="rounded-control m-0 bg-[var(--fill)] px-3 py-3 text-center text-xs text-[var(--node-muted)]">
           No code yet: nothing runs.
         </p>
       )}
@@ -71,6 +72,7 @@ function CodePage({
   onClose(): void;
 }) {
   const page = useRef<HTMLDialogElement>(null);
+  useBackPage(onClose);
   useEffect(() => {
     const el = page.current;
     if (!el) return;
@@ -91,7 +93,7 @@ function CodePage({
       }}
       className="fixed inset-0 m-0 flex h-dvh max-h-none w-dvw max-w-none flex-col border-0 bg-[var(--node-bg,var(--background))] p-0 text-[var(--node-fg,var(--foreground))] backdrop:bg-transparent"
     >
-      <HeaderBar className="gap-2 px-2.5">
+      <HeaderBar className="gap-2 px-2">
         <Button variant="ghost" size="sm" className="ps-1.5" onClick={onClose} aria-label="Back to the panel">
           <ChevronLeft variant="outline" /> Panel
         </Button>

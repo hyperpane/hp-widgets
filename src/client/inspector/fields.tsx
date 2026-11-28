@@ -5,7 +5,7 @@
 // canvas.
 
 import { type ReactNode, useEffect, useId, useState } from 'react';
-import { Input, Label, Select, Switch, Textarea, cn } from '@hyperpane/ui';
+import { Input, Label, Select, Switch, Textarea, cn, isComposing } from '@hyperpane/ui';
 
 export function Row({ label, hint, error, children }: { label: string; hint?: ReactNode; error?: string | null; children(id: string): ReactNode }) {
   const id = useId();
@@ -124,7 +124,7 @@ export function CheckedField({
           onChange={(e) => setTyped(e.target.value)}
           onBlur={commit}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') commit();
+            if (e.key === 'Enter' && !isComposing(e)) commit();
             if (e.key === 'Escape') setTyped(value);
           }}
         />

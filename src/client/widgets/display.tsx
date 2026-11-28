@@ -56,8 +56,9 @@ function LogWidget({ props, value, dev }: WidgetView) {
   }, [text]);
   return (
     // A sunken well (a step darker than the window in dark themes, a touch
-    // greyer in light ones), not a black box pasted on.
-    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[10px] bg-[var(--surface-sunken)] ring-1 ring-[var(--hairline)] ring-inset">
+    // greyer in light ones), not a black box pasted on; its head and its
+    // lines told apart by the space between them, not a rule.
+    <div className="rounded-card flex h-full w-full min-w-0 flex-col overflow-hidden bg-[var(--surface-sunken)]">
       <div className="flex h-8 flex-none items-center gap-2 px-3 text-xs leading-4 text-[var(--node-muted)]">
         <SquareTerminal variant="outline" className="size-3.5 flex-none" />
         <span className="min-w-0 flex-1 truncate font-medium">{props.label || 'Output'}</span>
@@ -75,12 +76,12 @@ function LogWidget({ props, value, dev }: WidgetView) {
             const el = e.currentTarget;
             stuck.current = el.scrollHeight - el.scrollTop - el.clientHeight < 16;
           }}
-          className="m-0 min-h-0 flex-1 overflow-auto border-t border-[var(--hairline)] px-3 py-2 font-mono text-[11px] leading-[1.6] break-all whitespace-pre-wrap text-[var(--node-fg)] outline-none select-text"
+          className="m-0 min-h-0 flex-1 overflow-auto px-3 pt-1 pb-2 font-mono text-[11px] leading-[1.6] break-all whitespace-pre-wrap text-[var(--node-fg)] outline-none select-text"
         >
           {text}
         </pre>
       ) : (
-        <div className="flex min-h-0 flex-1 items-center justify-center border-t border-[var(--hairline)] px-3 text-center text-xs text-[var(--node-muted)]">
+        <div className="flex min-h-0 flex-1 items-center justify-center px-3 pb-8 text-center text-xs text-[var(--node-muted)]">
           {dev ? 'Output shows here: commands’ lines and ui.log' : 'No output yet'}
         </div>
       )}
@@ -123,9 +124,9 @@ export const group: WidgetEntry = {
   defaults: TYPES.group,
   fields: [{ kind: 'text', prop: 'label', label: 'Title' }],
   render: ({ props, disabled }) => (
-    <div
-      className={`relative h-full w-full rounded-surface bg-[var(--surface-raised)] shadow-[var(--highlight-top),var(--shadow-raised)] ring-1 ring-[var(--hairline)] ring-inset ${disabled ? 'opacity-60' : ''}`}
-    >
+    // A flat card: the fill sets it off in light and dark alike (a raised
+    // ground is the window's own white in light, so it vanished there).
+    <div className={`relative h-full w-full rounded-surface bg-[var(--fill)] ${disabled ? 'opacity-60' : ''}`}>
       {props.label ? (
         <span className="absolute top-2.5 left-4 max-w-[calc(100%-2rem)] truncate text-[11px] leading-4 font-medium tracking-[0.06em] text-[var(--node-muted)] uppercase">
           {props.label}

@@ -134,7 +134,7 @@ export function DevMode({ state }: { state: PanelState }) {
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: the editor's keys, as below.
       <div ref={root} tabIndex={-1} className="flex min-h-0 flex-1 flex-col outline-none" onKeyDown={keys}>
-        <HeaderBar className="gap-2 px-2.5">
+        <HeaderBar className="gap-2 px-2">
           <Button variant="secondary" size="sm" onClick={() => setSheet('palette')}>
             <Plus variant="outline" /> Add
           </Button>

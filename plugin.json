@@ -2,7 +2,7 @@
   "manifest": 1,
   "id": "widgets",
   "name": "Widgets",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "publisher": "hyperpane",
   "description": "Make your own tool panels: lay out buttons, fields, switches and logs on a grid, then give them JavaScript and shell commands that run on the server. Export and import them as .hpw files.",
   "icon": "icon.svg",

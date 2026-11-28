@@ -74,7 +74,9 @@ export function Chooser({ project, onOpen }: { project: string; onOpen(id: strin
   return (
     <div className="flex h-full flex-col text-[13px] leading-5 text-[var(--node-fg)]">
       <HeaderBar
-        className="px-4"
+        // Its title lines up with the rows' tiles; the buttons sit as far
+        // from the end as from the top and bottom.
+        className="ps-4 pe-2"
         icon={<LayoutDashboard />}
         title="Panels"
         meta={panels && panels.length > 0 ? panels.length : undefined}

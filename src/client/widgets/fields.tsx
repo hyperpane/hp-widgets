@@ -4,7 +4,7 @@
 // for each letter.
 
 import { useEffect, useState } from 'react';
-import { Input, Textarea } from '@hyperpane/ui';
+import { Input, Textarea, isComposing } from '@hyperpane/ui';
 import { Hash, TextAlignStart, TextCursorInput } from '@hyperpane/icons';
 import { TYPES } from '../../shared/index.ts';
 import { Labeled, useCommit } from './Labeled.tsx';
@@ -26,7 +26,7 @@ function InputWidget({ props, value, disabled, dev, change, commit }: WidgetView
           onChange={(e) => change(e.target.value)}
           onFocus={c.onFocus}
           onBlur={c.onBlur}
-          onKeyDown={(e) => e.key === 'Enter' && c.enter()}
+          onKeyDown={(e) => e.key === 'Enter' && !isComposing(e) && c.enter()}
         />
       )}
     </Labeled>
@@ -70,7 +70,7 @@ function NumberWidget({ props, value, disabled, dev, change, commit }: WidgetVie
             setEditing(false);
             c.onBlur();
           }}
-          onKeyDown={(e) => e.key === 'Enter' && c.enter()}
+          onKeyDown={(e) => e.key === 'Enter' && !isComposing(e) && c.enter()}
         />
       )}
     </Labeled>

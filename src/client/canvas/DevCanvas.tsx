@@ -110,11 +110,9 @@ export function DevCanvas({
             {children}
           </div>
         </div>
-        <div className="flex h-5 items-center gap-2 text-xs leading-4 text-[var(--node-muted)] tabular-nums">
-          <span>
-            {panel.width} × {panel.height}
-          </span>
-          {scale < 1 && <span>· {Math.round(scale * 100)}%</span>}
+        <div className="flex h-5 items-center text-xs leading-4 text-[var(--node-muted)] tabular-nums">
+          {panel.width} × {panel.height}
+          {scale < 1 && ` · ${Math.round(scale * 100)}%`}
         </div>
       </div>
     </div>

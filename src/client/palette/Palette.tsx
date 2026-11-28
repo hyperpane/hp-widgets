@@ -78,10 +78,10 @@ export function Palette({
                   title={`${entry.hint} ${hint}`}
                   className={cn(
                     'group flex h-16 min-w-0 cursor-grab touch-pan-y flex-col items-center justify-center gap-1.5 rounded-[10px] px-1 text-xs text-[var(--node-fg)]',
-                    'bg-[var(--surface-raised)] shadow-[var(--highlight-top),var(--shadow-raised)] ring-1 ring-[var(--hairline)] ring-inset',
+                    'bg-[var(--surface-raised)]',
                     'transition-[background-color,box-shadow,scale] duration-100 hover:bg-[color-mix(in_oklab,var(--surface-raised),var(--node-fg)_4%)] active:scale-[0.98] active:cursor-grabbing',
                     styles.focusRing,
-                    ghost?.type === type && 'bg-[color-mix(in_srgb,var(--node-accent)_10%,transparent)] ring-[color-mix(in_srgb,var(--node-accent)_45%,transparent)]',
+                    ghost?.type === type && 'bg-[color-mix(in_srgb,var(--node-accent)_10%,transparent)]',
                   )}
                   onPointerDown={(e) => down(e, type)}
                   onPointerMove={move}

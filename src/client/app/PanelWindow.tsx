@@ -4,12 +4,13 @@
 // a tweak in Dev mode doesn't lose what was typed in View mode.
 
 import { useEffect, useState } from 'react';
-import { useHost } from '@hyperpane/sdk/client';
+import { useBack, useHost } from '@hyperpane/sdk/client';
 import { Button, Empty, Spinner, useMenu } from '@hyperpane/ui';
 import { CircleAlert } from '@hyperpane/icons';
 import { hpwFileName, type Panel } from '../../shared/index.ts';
 import { ViewCanvas } from '../canvas/ViewCanvas.tsx';
 import { useRuntime } from '../runtime/useRuntime.ts';
+import { closePage } from './back.ts';
 import { DevMode } from './DevMode.tsx';
 import { type Mode, PanelToolbar } from './PanelToolbar.tsx';
 import { type PanelState, usePanel } from './usePanel.ts';
@@ -19,6 +20,10 @@ const PLUGIN = 'widgets';
 
 export function PanelWindow({ id, project, window, onOpen }: { id: string; project: string; window: number; onOpen(id: string | null): void }) {
   const state = usePanel(id, project, window);
+  // Back: out of a script's editor, else to the other panels.
+  useBack(() => {
+    if (!closePage()) void state.flush().then(() => onOpen(null));
+  });
   if (state.error) {
     return (
       <Empty

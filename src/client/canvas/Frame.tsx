@@ -40,7 +40,9 @@ export function Frame({
       className={cn(
         'group/frame absolute cursor-move touch-none select-none',
         selected
-          ? 'z-10 outline-2 outline-offset-1 outline-[var(--node-accent)]'
+          ? // Raised over its neighbours, but a group stays under what's in
+            // it: lifted, its card covered the widgets it holds.
+            cn('outline-2 outline-offset-1 outline-[var(--node-accent)]', widget.type !== 'group' && 'z-10')
           : 'hover:outline-1 hover:outline-offset-1 hover:outline-[var(--node-input-hover)] hover:outline-dashed',
         dragging && 'opacity-90',
       )}

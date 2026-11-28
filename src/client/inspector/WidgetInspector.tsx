@@ -52,7 +52,7 @@ export function WidgetInspector({
   return (
     <>
       <HeaderBar
-        className="sticky top-0 z-10 bg-[var(--node-bg)] px-4 pe-2.5"
+        className="sticky top-0 z-10 bg-[var(--node-bg)] ps-4 pe-2"
         icon={<IconTile size="xs" icon={<Icon />} />}
         title={entry.title}
         meta={<span className="font-mono">{id}</span>}
